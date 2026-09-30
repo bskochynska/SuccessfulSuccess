@@ -391,3 +391,9 @@ There is no deploy (CD) stage — no target is configured yet.
 - The frontend runs `next dev` in the container with the same bind mount.
 - Backend tests run against a real Postgres (`meetings_test`), truncating tables
   between tests; `make test` creates that database if it is missing.
+
+## Architecture Decision: Monorepo
+
+We build Spry as a monorepo for two main reasons:
+1. **Atomic changes:** A single commit changes both the API and the client that calls it, preventing contract drift.
+2. **Context window for AI:** The entire pipeline lives in one tree, allowing an AI agent to read endpoints, models, migrations, and UI components in a single pass without guessing contracts.

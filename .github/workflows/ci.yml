@@ -14,6 +14,22 @@ jobs:
       run:
         working-directory: ./backend
 
+    # --- ДОДАНО: Служба PostgreSQL для тестів ---
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: spry
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -33,6 +49,9 @@ jobs:
         run: uv run ruff check .
 
       - name: Run Tests
+        # --- ДОДАНО: Адреса підключення до тестової БД ---
+        env:
+          DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/spry
         run: |
           if [ -d "tests" ]; then
             uv run pytest

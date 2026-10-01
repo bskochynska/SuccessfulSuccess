@@ -22,7 +22,7 @@ endif
 AWS_REGION ?= us-east-1
 export AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN AWS_REGION PROJECT_NAME
 # On Windows, stop Git's bash rewriting container paths such as /aws or
-# /dev/null into C:/Program Files/Git/... before docker sees them.
+# out.json into C:/Program Files/Git/... before docker sees them.
 export MSYS_NO_PATHCONV := 1
 export MSYS2_ARG_CONV_EXCL := *
 
@@ -65,7 +65,7 @@ stack-outputs = $(AWS) cloudformation describe-stacks --stack-name $(1) \
 
 # $(call wait-stack-idle,<stack>)
 wait-stack-idle = while status=$$($(AWS) cloudformation describe-stacks --stack-name $(1) \
-		--query 'Stacks[0].StackStatus' --output text 2>/dev/null | tr -d '[:space:]'); \
+		--query 'Stacks[0].StackStatus' --output text 2>out.json | tr -d '[:space:]'); \
 		case "$$status" in *_IN_PROGRESS) true ;; *) false ;; esac; do \
 		echo "$(1) is $$status — waiting for it to settle..."; sleep 30; done
 
@@ -74,7 +74,7 @@ wait-stack-idle = while status=$$($(AWS) cloudformation describe-stacks --stack-
 # deploy start over.
 # $(call clear-failed-create,<stack>)
 clear-failed-create = if [ "$$($(AWS) cloudformation describe-stacks --stack-name $(1) \
-		--query 'Stacks[0].StackStatus' --output text 2>/dev/null | tr -d '[:space:]')" = ROLLBACK_COMPLETE ]; then \
+		--query 'Stacks[0].StackStatus' --output text 2>out.json | tr -d '[:space:]')" = ROLLBACK_COMPLETE ]; then \
 		echo "$(1) failed to create earlier — deleting it before retrying"; \
 		$(AWS) cloudformation delete-stack --stack-name $(1) && \
 		$(AWS) cloudformation wait stack-delete-complete --stack-name $(1); fi
@@ -158,7 +158,7 @@ aws-deploy: ## Deploy everything: sign-in, then the backend, then the frontend b
 aws-deploy-auth: ## Create/update the Cognito user pool (email + password; Google when GOOGLE_CLIENT_ID is set)
 	$(require-aws-credentials)
 	@urls="http://localhost:$(or $(FRONTEND_PORT),3000)/"; \
-		site=$$($(call stack-output,$(FRONTEND_STACK),AllowedOrigins) 2>/dev/null | tr -d '[:space:]'); \
+		site=$$($(call stack-output,$(FRONTEND_STACK),AllowedOrigins) 2>out.json | tr -d '[:space:]'); \
 		case "$$site" in ""|None) ;; *) urls="$$urls,$$(echo "$$site" | sed 's|,|/,|g')/" ;; esac; \
 		echo "Sign-in redirect URLs: $$urls"; \
 		test -n "$(GOOGLE_CLIENT_ID)" || echo "GOOGLE_CLIENT_ID is empty — Google sign-in stays off"; \
@@ -208,7 +208,7 @@ aws-push: aws-ecr ## Build the backend Lambda image and push it to ECR
 aws-deploy-backend: aws-push ## Deploy the backend to AWS (Lambda function URL + Aurora Serverless), then migrate
 	$(require-aws-credentials)
 	$(require-db-password)
-	@pool=$$($(call stack-output,$(AUTH_STACK),UserPoolId) 2>/dev/null | tr -d '[:space:]'); \
+	@pool=$$($(call stack-output,$(AUTH_STACK),UserPoolId) 2> out.json | tr -d '[:space:]'); \
 		client=$$($(call stack-output,$(AUTH_STACK),UserPoolClientId) | tr -d '[:space:]'); \
 		issuer=$$($(call stack-output,$(AUTH_STACK),Issuer) | tr -d '[:space:]'); \
 		case "$$pool" in ""|None) echo "No user pool found — run: make aws-deploy-auth"; exit 1 ;; esac; \
@@ -227,7 +227,7 @@ aws-deploy-backend: aws-push ## Deploy the backend to AWS (Lambda function URL +
 			--output text | tr -d '[:space:]'); \
 		cors="$(AWS_CORS_ORIGINS)"; \
 		if [ -z "$$cors" ]; then \
-			cors=$$($(call stack-output,$(FRONTEND_STACK),AllowedOrigins) 2>/dev/null | tr -d '[:space:]'); \
+			cors=$$($(call stack-output,$(FRONTEND_STACK),AllowedOrigins) 2>out.json | tr -d '[:space:]'); \
 			case "$$cors" in ""|None) cors='*' ;; esac; \
 		fi; \
 		echo "vpc=$$vpc subnets=$$subnets image=$$repo@$$digest cors=$$cors"; \
@@ -260,7 +260,7 @@ aws-migrate: ## Apply database migrations (invokes the backend function directly
 		echo "Migrating ($$fn)"; \
 		err=$$($(AWS) lambda invoke --function-name "$$fn" \
 			--cli-binary-format raw-in-base64-out --payload '{"action":"migrate"}' \
-			--query FunctionError --output text /dev/null | tr -d '[:space:]'); \
+			--query FunctionError --output text out.json | tr -d '[:space:]'); \
 		test "$$err" = "None" || { echo "Migration failed ($$err) — see make aws-logs"; exit 1; }
 
 aws-url: ## Print the deployed API URL
@@ -285,7 +285,7 @@ aws-frontend-cert: ## Request and validate the HTTPS certificate for AWS_FRONTEN
 
 aws-deploy-frontend: ## Deploy the frontend to S3 + CloudFront, built against the deployed backend URL
 	$(require-aws-credentials)
-	@api=$$($(call stack-output,$(APP_STACK),ApiUrl) 2>/dev/null | tr -d '[:space:]'); \
+	@api=$$($(call stack-output,$(APP_STACK),ApiUrl) 2>out.json | tr -d '[:space:]'); \
 		test -n "$$api" -a "$$api" != "None" || { \
 			echo "No backend API found — run: make aws-deploy-backend"; exit 1; }; \
 		domain=""; \
@@ -308,7 +308,7 @@ aws-deploy-frontend: ## Deploy the frontend to S3 + CloudFront, built against th
 			$(STACK_TAGS) \
 			--parameter-overrides \
 				"ProjectName=$(PROJECT_NAME)" \
-				"PricingPlan=$(or $(AWS_CLOUDFRONT_PLAN),FREE)" \
+				"PricingPlan=$(or $(AWS_CLOUDFRONT_PLAN),PAY_AS_YOU_GO)" \
 				$$domain
 	@# Now that the site's URL exists, let Cognito redirect back to it.
 	@$(MAKE) --no-print-directory aws-deploy-auth
@@ -353,7 +353,7 @@ aws-destroy: ## Delete every stack, including the database and its data
 	@printf 'Delete %s, %s, %s and %s? The Aurora cluster and all its data, and every user account, go with them (no snapshot). Type yes: ' \
 		"$(FRONTEND_STACK)" "$(APP_STACK)" "$(AUTH_STACK)" "$(ECR_STACK)"; \
 		read answer; test "$$answer" = "yes" || { echo "Aborted."; exit 1; }
-	@bucket=$$($(call stack-output,$(FRONTEND_STACK),BucketName) 2>/dev/null | tr -d '[:space:]'); \
+	@bucket=$$($(call stack-output,$(FRONTEND_STACK),BucketName) 2>out.json | tr -d '[:space:]'); \
 		if [ -n "$$bucket" ] && [ "$$bucket" != "None" ]; then \
 			echo "Emptying s3://$$bucket"; \
 			$(AWS) s3 rm "s3://$$bucket" --recursive --only-show-errors || true; \

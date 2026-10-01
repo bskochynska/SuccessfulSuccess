@@ -2,10 +2,7 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: >-
   Meetings frontend: the Next.js static export in a private S3 bucket, served
   over HTTPS by CloudFront through origin access control, optionally on a
-  custom domain. The browser calls the backend's Lambda function URL directly;
-  FastAPI's CORS settings allow it. The distribution is on CloudFront's
-  flat-rate Free plan. Deployed in us-east-1 with everything else, which is
-  also the only region CloudFront reads certificates and web ACLs from.
+  custom domain.
 
 Parameters:
   ProjectName:
@@ -41,9 +38,7 @@ Parameters:
     Default: FREE
     AllowedValues: [FREE, PAY_AS_YOU_GO]
     Description: >-
-      FREE subscribes the distribution to CloudFront's flat-rate Free plan
-      ($0/month, 1M requests and 100 GB a month, no overage charges; at most 3
-      per account). AWS refuses it for accounts still on the AWS Free Tier;
+      FREE subscribes the distribution to CloudFront's flat-rate Free plan.
       PAY_AS_YOU_GO skips the subscription there.
 
 Conditions:
@@ -56,12 +51,10 @@ Conditions:
 Resources:
   Bucket:
     Type: AWS::S3::Bucket
-    # Emptied by `make aws-destroy` before the stack goes.
     DeletionPolicy: Delete
     UpdateReplacePolicy: Delete
     Properties:
       BucketName: !Sub "${ProjectName}-frontend-${AWS::AccountId}"
-      # Only CloudFront reads the bucket, so it stays fully private.
       PublicAccessBlockConfiguration:
         BlockPublicAcls: true
         IgnorePublicAcls: true
@@ -78,7 +71,6 @@ Resources:
         - Key: PROJECT_NAME
           Value: !Ref ProjectName
 
-  # Origin access control and CloudFront functions take no tags.
   OriginAccessControl:
     Type: AWS::CloudFront::OriginAccessControl
     Properties:
@@ -88,9 +80,6 @@ Resources:
         SigningBehavior: always
         SigningProtocol: sigv4
 
-  # The export is built with trailingSlash, so /meetings/new/ lives at
-  # meetings/new/index.html. S3's REST endpoint has no index documents, so map
-  # every extension-less path onto its folder's index.html here.
   IndexRewriteFunction:
     Type: AWS::CloudFront::Function
     Properties:
@@ -111,31 +100,12 @@ Resources:
           return request;
         }
 
-  # Every flat-rate plan needs a web ACL of its own on the distribution. This
-  # one only allows: the plan's DDoS protection applies either way, and WAF
-  # rules can be added later at no extra cost.
-  WebAcl:
-    Type: AWS::WAFv2::WebACL
-    Properties:
-      Name: !Sub "${ProjectName}-frontend"
-      Scope: CLOUDFRONT
-      DefaultAction:
-        Allow: {}
-      VisibilityConfig:
-        SampledRequestsEnabled: true
-        CloudWatchMetricsEnabled: true
-        MetricName: !Sub "${ProjectName}-frontend"
-      Tags:
-        - Key: PROJECT_NAME
-          Value: !Ref ProjectName
-
   Distribution:
     Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
         Comment: !Sub "${ProjectName} frontend"
         Enabled: true
-        WebACLId: !GetAtt WebAcl.Arn
         HttpVersion: http2and3
         IPV6Enabled: true
         DefaultRootObject: index.html
@@ -158,11 +128,10 @@ Resources:
           Compress: true
           AllowedMethods: [GET, HEAD]
           CachedMethods: [GET, HEAD]
-          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6   # Managed-CachingOptimized
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
           FunctionAssociations:
             - EventType: viewer-request
               FunctionARN: !GetAtt IndexRewriteFunction.FunctionMetadata.FunctionARN
-        # Without s3:ListBucket a missing key comes back 403, not 404.
         CustomErrorResponses:
           - ErrorCode: 403
             ResponseCode: 404
@@ -176,8 +145,6 @@ Resources:
         - Key: PROJECT_NAME
           Value: !Ref ProjectName
 
-  # The Free plan activates immediately. It takes no tags, and CloudFormation
-  # cancels it (immediately, for Free) before deleting the distribution.
   PricingPlanSubscription:
     Type: AWS::PricingPlanManager::Subscription
     Condition: HasFreePlan
@@ -187,7 +154,6 @@ Resources:
       UsageLevel: DEFAULT
       ResourceArns:
         - !Sub "arn:${AWS::Partition}:cloudfront::${AWS::AccountId}:distribution/${Distribution}"
-        - !GetAtt WebAcl.Arn
 
   BucketPolicy:
     Type: AWS::S3::BucketPolicy
@@ -206,7 +172,6 @@ Resources:
               StringEquals:
                 AWS:SourceArn: !Sub "arn:${AWS::Partition}:cloudfront::${AWS::AccountId}:distribution/${Distribution}"
 
-  # Route 53 records take no tags.
   AliasRecord:
     Type: AWS::Route53::RecordSet
     Condition: HasZone
@@ -216,7 +181,7 @@ Resources:
       Type: A
       AliasTarget:
         DNSName: !GetAtt Distribution.DomainName
-        HostedZoneId: Z2FDTNDATAQYW2   # CloudFront's fixed zone id
+        HostedZoneId: Z2FDTNDATAQYW2
 
   AliasRecordIpv6:
     Type: AWS::Route53::RecordSet

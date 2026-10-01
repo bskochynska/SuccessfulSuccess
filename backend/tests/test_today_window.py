@@ -84,7 +84,7 @@ async def test_search_filters_by_name_and_description(client, meeting_payload):
             "ends_at": _iso(start + timedelta(hours=11)),
         },
     )
-    
+
     await client.post(
         "/api/v1/meetings",
         json=meeting_payload

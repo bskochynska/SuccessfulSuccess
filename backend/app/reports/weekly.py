@@ -37,16 +37,14 @@ async def build_weekly_report(week: str, db: AsyncSession | None = None) -> byte
 
         # 2. Отримуємо зустрічі за поточний тиждень
         query_curr = select(Meeting).where(
-            Meeting.starts_at < end_curr,
-            Meeting.ends_at > start_curr
+            Meeting.starts_at < end_curr, Meeting.ends_at > start_curr
         )
         res_curr = await db.scalars(query_curr)
         curr_meetings = list(res_curr.all())
 
         # 3. Отримуємо зустрічі за попередній тиждень
         query_prev = select(Meeting).where(
-            Meeting.starts_at < end_prev,
-            Meeting.ends_at > start_prev
+            Meeting.starts_at < end_prev, Meeting.ends_at > start_prev
         )
         res_prev = await db.scalars(query_prev)
         prev_meetings = list(res_prev.all())
@@ -69,9 +67,7 @@ async def build_weekly_report(week: str, db: AsyncSession | None = None) -> byte
 
         # 4. Топ-5 найдовших зустрічей поточного тижня
         top_5_meetings = sorted(
-            curr_meetings,
-            key=lambda m: (m.ends_at - m.starts_at).total_seconds(),
-            reverse=True
+            curr_meetings, key=lambda m: (m.ends_at - m.starts_at).total_seconds(), reverse=True
         )[:5]
 
         # 5. Генерація CSV у пам'яті
@@ -83,12 +79,14 @@ async def build_weekly_report(week: str, db: AsyncSession | None = None) -> byte
         writer.writerow(["Metric", "Current Week", "Previous Week", "Change"])
         writer.writerow(["ISO Week", week, f"Previous ({start_prev.strftime('%G-W%V')})", "-"])
         writer.writerow(["Total Meetings", curr_count, prev_count, f"{count_change:+d}"])
-        writer.writerow([
-            "Total Duration (hours)",
-            f"{curr_duration_hrs:.2f}",
-            f"{prev_duration_hrs:.2f}",
-            f"{duration_change_hrs:+.2f}"
-        ])
+        writer.writerow(
+            [
+                "Total Duration (hours)",
+                f"{curr_duration_hrs:.2f}",
+                f"{prev_duration_hrs:.2f}",
+                f"{duration_change_hrs:+.2f}",
+            ]
+        )
         writer.writerow([])
 
         # Секція 2: Топ-5 найдовших зустрічей
@@ -99,12 +97,9 @@ async def build_weekly_report(week: str, db: AsyncSession | None = None) -> byte
             duration_min = int((m.ends_at - m.starts_at).total_seconds() / 60)
             participants_cnt = len(m.participants) if m.participants else 0
 
-            writer.writerow([
-                m.name,
-                m.starts_at.strftime("%Y-%m-%d %H:%M"),
-                duration_min,
-                participants_cnt
-            ])
+            writer.writerow(
+                [m.name, m.starts_at.strftime("%Y-%m-%d %H:%M"), duration_min, participants_cnt]
+            )
 
         return output.getvalue().encode("utf-8")
 

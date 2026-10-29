@@ -1,13 +1,14 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { CalendarIcon } from "lucide-react"
+import { CalendarIcon, Sparkles } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 
 import { ParticipantsInput } from "@/components/participants-input"
+import { PasteAgendaModal } from "@/components/PasteAgendaModal"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import {
@@ -24,6 +25,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Textarea } from "@/components/ui/textarea"
 import { useCreateMeeting, useUpdateMeeting } from "@/hooks/use-meetings"
 import { ApiError } from "@/lib/api"
+import { type AgendaItem } from "@/lib/agendaApi"
 import { formatTime, parseIsoDay, toIsoDate, toIsoWithOffset } from "@/lib/datetime"
 import type { Meeting } from "@/lib/types"
 
@@ -69,10 +71,7 @@ type FormValues = z.infer<typeof formSchema>
 
 type ParticipantErrors = { name?: { message?: string }; email?: { message?: string } }
 
-/** Flattens react-hook-form's per-row participant errors into { rowIndex: message }. */
-function participantErrors(
-  rows: unknown,
-): Record<number, string | undefined> {
+function participantErrors(rows: unknown): Record<number, string | undefined> {
   if (!Array.isArray(rows)) return {}
   return Object.fromEntries(
     rows.map((row: ParticipantErrors | undefined, index: number) => [
@@ -82,7 +81,6 @@ function participantErrors(
   )
 }
 
-/** Blank form for a new meeting, or the meeting's current values when editing. */
 function defaultValues(meeting?: Meeting): FormValues {
   if (!meeting) {
     return {
@@ -109,7 +107,6 @@ function defaultValues(meeting?: Meeting): FormValues {
   }
 }
 
-/** Creates a meeting, or edits `meeting` when one is passed. */
 export function MeetingFormDialog({
   open,
   onOpenChange,
@@ -122,6 +119,7 @@ export function MeetingFormDialog({
   const createMeeting = useCreateMeeting()
   const updateMeeting = useUpdateMeeting()
   const [datePickerOpen, setDatePickerOpen] = useState(false)
+  const [aiModalOpen, setAiModalOpen] = useState(false)
   const isEdit = !!meeting
 
   const form = useForm<FormValues>({
@@ -135,13 +133,45 @@ export function MeetingFormDialog({
     control,
     reset,
     setError,
+    setValue,
+    getValues,
     formState: { errors, isSubmitting },
   } = form
 
-  // Refill the form each time it opens, so edits start from the meeting's current values.
   useEffect(() => {
     if (open) reset(defaultValues(meeting))
   }, [open, meeting, reset])
+
+  const handleItemsParsed = (items: AgendaItem[]) => {
+    if (!items || items.length === 0) {
+      toast.error("No agenda items found")
+      return
+    }
+
+    const formattedAgenda = items
+      .map((item) => {
+        const timePart = item.time_start
+          ? `[${item.time_start}${item.time_end ? ` - ${item.time_end}` : ""}] `
+          : ""
+        const assigneePart = item.assignee ? ` (${item.assignee})` : ""
+        const descPart = item.description ? `: ${item.description}` : ""
+        return `• ${timePart}${item.title}${assigneePart}${descPart}`
+      })
+      .join("\n")
+
+    const currentDescription = getValues("description") || ""
+    const newDescription = currentDescription
+      ? `${currentDescription}\n\nAgenda:\n${formattedAgenda}`
+      : `Agenda:\n${formattedAgenda}`
+
+    setValue("description", newDescription, {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true,
+    })
+
+    toast.success("Agenda added to description")
+  }
 
   const onSubmit = handleSubmit(async (values) => {
     const participants = values.participants
@@ -171,7 +201,6 @@ export function MeetingFormDialog({
       onOpenChange(false)
     } catch (error) {
       if (error instanceof ApiError) {
-        // Map server-side field errors back onto the matching inputs.
         const fieldMap: Record<string, keyof FormValues> = {
           name: "name",
           description: "description",
@@ -192,134 +221,158 @@ export function MeetingFormDialog({
   })
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90svh] overflow-y-auto sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>{isEdit ? "Edit meeting" : "New meeting"}</DialogTitle>
-          <DialogDescription>
-            {isEdit
-              ? "Change the details, time slot or participants."
-              : "Give it a name, a time slot and the people who should be there."}
-          </DialogDescription>
-        </DialogHeader>
-
-        <form onSubmit={onSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
-            <Input
-              id="name"
-              placeholder="Sprint planning"
-              aria-invalid={!!errors.name}
-              aria-describedby={errors.name ? "name-error" : undefined}
-              {...register("name")}
-            />
-            {errors.name ? (
-              <p id="name-error" className="text-destructive text-sm">
-                {errors.name.message}
-              </p>
-            ) : null}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              rows={3}
-              placeholder="What is this meeting about?"
-              {...register("description")}
-            />
-            {errors.description ? (
-              <p className="text-destructive text-sm">{errors.description.message}</p>
-            ) : null}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="location">Location</Label>
-            <Input id="location" placeholder="Room 3 or a meeting link" {...register("location")} />
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-3">
-            <div className="space-y-2 sm:col-span-1">
-              <Label>Date</Label>
-              <Controller
-                control={control}
-                name="date"
-                render={({ field }) => (
-                  <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="w-full justify-start font-normal"
-                      >
-                        <CalendarIcon className="size-4" aria-hidden />
-                        {toIsoDate(field.value)}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={(date) => {
-                          if (date) field.onChange(date)
-                          setDatePickerOpen(false)
-                        }}
-                        autoFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                )}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="startTime">Start</Label>
-              <Input id="startTime" type="time" step={900} {...register("startTime")} />
-              {errors.startTime ? (
-                <p className="text-destructive text-sm">{errors.startTime.message}</p>
-              ) : null}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="endTime">End</Label>
-              <Input id="endTime" type="time" step={900} {...register("endTime")} />
-              {errors.endTime ? (
-                <p className="text-destructive text-sm">{errors.endTime.message}</p>
-              ) : null}
-            </div>
-          </div>
-
-          <Controller
-            control={control}
-            name="participants"
-            render={({ field }) => (
-              <ParticipantsInput
-                value={field.value}
-                onChange={field.onChange}
-                errors={participantErrors(errors.participants)}
-              />
-            )}
-          />
-          {errors.participants?.message ? (
-            <p className="text-destructive text-sm">{errors.participants.message}</p>
-          ) : null}
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isSubmitting}>
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="max-h-[90svh] overflow-y-auto sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>{isEdit ? "Edit meeting" : "New meeting"}</DialogTitle>
+            <DialogDescription>
               {isEdit
-                ? isSubmitting
-                  ? "Saving…"
-                  : "Save changes"
-                : isSubmitting
-                  ? "Creating…"
-                  : "Create meeting"}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+                ? "Change the details, time slot or participants."
+                : "Give it a name, a time slot and the people who should be there."}
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={onSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                placeholder="Sprint planning"
+                aria-invalid={!!errors.name}
+                aria-describedby={errors.name ? "name-error" : undefined}
+                {...register("name")}
+              />
+              {errors.name ? (
+                <p id="name-error" className="text-destructive text-sm">
+                  {errors.name.message}
+                </p>
+              ) : null}
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="description">Description</Label>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 text-xs text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-950"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    setAiModalOpen(true)
+                  }}
+                >
+                  <Sparkles className="mr-1 size-3.5" />
+                  Paste Agenda (AI)
+                </Button>
+              </div>
+              <Textarea
+                id="description"
+                rows={4}
+                placeholder="What is this meeting about?"
+                {...register("description")}
+              />
+              {errors.description ? (
+                <p className="text-destructive text-sm">{errors.description.message}</p>
+              ) : null}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="location">Location</Label>
+              <Input id="location" placeholder="Room 3 or a meeting link" {...register("location")} />
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-3">
+              <div className="space-y-2 sm:col-span-1">
+                <Label>Date</Label>
+                <Controller
+                  control={control}
+                  name="date"
+                  render={({ field }) => (
+                    <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="w-full justify-start font-normal"
+                        >
+                          <CalendarIcon className="size-4" aria-hidden />
+                          {toIsoDate(field.value)}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={(date) => {
+                            if (date) field.onChange(date)
+                            setDatePickerOpen(false)
+                          }}
+                          autoFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  )}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="startTime">Start</Label>
+                <Input id="startTime" type="time" step={900} {...register("startTime")} />
+                {errors.startTime ? (
+                  <p className="text-destructive text-sm">{errors.startTime.message}</p>
+                ) : null}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="endTime">End</Label>
+                <Input id="endTime" type="time" step={900} {...register("endTime")} />
+                {errors.endTime ? (
+                  <p className="text-destructive text-sm">{errors.endTime.message}</p>
+                ) : null}
+              </div>
+            </div>
+
+            <Controller
+              control={control}
+              name="participants"
+              render={({ field }) => (
+                <ParticipantsInput
+                  value={field.value}
+                  onChange={field.onChange}
+                  errors={participantErrors(errors.participants)}
+                />
+              )}
+            />
+            {errors.participants?.message ? (
+              <p className="text-destructive text-sm">{errors.participants.message}</p>
+            ) : null}
+
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isEdit
+                  ? isSubmitting
+                    ? "Saving…"
+                    : "Save changes"
+                  : isSubmitting
+                    ? "Creating…"
+                    : "Create meeting"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <PasteAgendaModal
+        isOpen={aiModalOpen}
+        onClose={() => setAiModalOpen(false)}
+        onItemsParsed={handleItemsParsed}
+      />
+    </>
   )
 }

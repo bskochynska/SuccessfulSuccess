@@ -53,6 +53,7 @@ export function TodayPage({ initialDialogOpen = false }: { initialDialogOpen?: b
             <h1 className="text-gradient-canva text-4xl font-bold tracking-tight sm:text-5xl">
               Today
             </h1>
+            
             {data ? (
               <p className="text-muted-foreground mt-2 text-base">{formatLongDate(data.date)}</p>
             ) : null}
@@ -87,3 +88,6 @@ export function TodayPage({ initialDialogOpen = false }: { initialDialogOpen?: b
     </>
   )
 }
+
+// Додано обов'язковий default export для Next.js App Router
+export default TodayPage

@@ -1,25 +1,13 @@
-COMPOSE ?= docker compose
-
-ifeq ($(OS),Windows_NT)
-ifeq ($(findstring msys,$(MAKE_HOST))$(findstring cygwin,$(MAKE_HOST)),)
-GIT_HOME ?= C:/Program Files/Git
-export PATH := $(GIT_HOME)/bin;$(GIT_HOME)/usr/bin;$(PATH)
-SHELL := bash.exe
-.SHELLFLAGS := -c
-endif
-endif
-
--include .env
 AWS_REGION ?= us-east-1
 export AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN AWS_REGION PROJECT_NAME
 export MSYS_NO_PATHCONV := 1
 export MSYS2_ARG_CONV_EXCL := *
 
 AWS ?= docker run --rm \
-	-e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN \
-	-e AWS_DEFAULT_REGION=$(AWS_REGION) \
-	-v $(CURDIR):/aws -w /aws \
-	amazon/aws-cli:latest
+    -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN \
+    -e AWS_DEFAULT_REGION=$(AWS_REGION) \
+    -v $(CURDIR):/aws -w /aws \
+    amazon/aws-cli:latest
 
 AUTH_STACK ?= $(PROJECT_NAME)-auth
 APP_STACK ?= $(PROJECT_NAME)-backend
@@ -34,30 +22,30 @@ STACK_TAGS = --tags "PROJECT_NAME=$(PROJECT_NAME)"
 CERT = AWS_CLI="$(AWS)" AWS_CERT_REGION=us-east-1 infra/certificate.sh
 
 stack-output = $(AWS) cloudformation describe-stacks --stack-name $(1) \
-	--query 'Stacks[0].Outputs[?OutputKey==`$(2)`].OutputValue' --output text
+    --query 'Stacks[0].Outputs[?OutputKey==`$(2)`].OutputValue' --output text
 
 stack-outputs = $(AWS) cloudformation describe-stacks --stack-name $(1) \
-	--query 'Stacks[0].Outputs[].[OutputKey,OutputValue]' --output text
+    --query 'Stacks[0].Outputs[].[OutputKey,OutputValue]' --output text
 
 wait-stack-idle = while status=$$($(AWS) cloudformation describe-stacks --stack-name $(1) \
-	--query 'Stacks[0].StackStatus' --output text 2>out.json | tr -d '[:space:]'); \
-	case "$$status" in *_IN_PROGRESS) true ;; *) false ;; esac; do \
-	echo "$(1) is$$status — waiting for it to settle..."; sleep 30; done
+    --query 'Stacks[0].StackStatus' --output text 2>out.json | tr -d '[:space:]'); \
+    case "$$status" in *_IN_PROGRESS) true ;; *) false ;; esac; do \
+    echo "$(1) is $$status — waiting for it to settle..."; sleep 30; done
 
 clear-failed-create = if [ "$$($(AWS) cloudformation describe-stacks --stack-name $(1) \
-	--query 'Stacks[0].StackStatus' --output text 2>out.json | tr -d '[:space:]')" = ROLLBACK_COMPLETE ]; then \
-	echo "$(1) failed to create earlier — deleting it before retrying"; \
-	$(AWS) cloudformation delete-stack --stack-name $(1) && \$(AWS) cloudformation wait stack-delete-complete --stack-name $(1); fi
+    --query 'Stacks[0].StackStatus' --output text 2>out.json | tr -d '[:space:]')" = ROLLBACK_COMPLETE ]; then \
+    echo "$(1) failed to create earlier — deleting it before retrying"; \
+    $(AWS) cloudformation delete-stack --stack-name $(1) && $(AWS) cloudformation wait stack-delete-complete --stack-name $(1); fi
 
 require-aws-credentials = @test -n "$(AWS_ACCESS_KEY_ID)" -a -n "$(AWS_SECRET_ACCESS_KEY)" || { echo "AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY are empty — set them in .env"; exit 1; }
 require-db-password = @test -n "$(AWS_DB_PASSWORD)" || { echo "AWS_DB_PASSWORD is empty — set it in .env (8+ chars, [A-Za-z0-9_-] only)"; exit 1; }
 
 .PHONY: help up up-build down down-v logs ps migrate revision seed test lint fmt shell-backend psql \
-	aws-whoami aws-deploy aws-deploy-auth aws-auth-env aws-ecr aws-push aws-deploy-backend aws-migrate aws-url aws-status aws-logs \
-	aws-frontend-cert aws-deploy-frontend aws-frontend-url aws-destroy report-now
+    aws-whoami aws-deploy aws-deploy-auth aws-auth-env aws-ecr aws-push aws-deploy-backend aws-migrate aws-url aws-status aws-logs \
+    aws-frontend-cert aws-deploy-frontend aws-frontend-url aws-destroy report-now llm-hello parse
 
-help:
-	@grep -hE '^[a-z-]+:.*?## .*$$'$(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-20s\033[0m %s\n", $$1,$$2}'
+help: ## Show this help message
+	@grep -hE '^[a-z-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-20s\033[0m %s\n", $$1,$$2}'
 
 up: ## Start the whole stack
 	$(COMPOSE) up
@@ -89,8 +77,9 @@ seed: ## Insert demo meetings for today for one user: make seed owner=<cognito-s
 
 test: ## Run the backend test suite against a throwaway database
 	$(COMPOSE) exec db psql -U app -d postgres -tc \
-		"SELECT 1 FROM pg_database WHERE datname='meetings_test'" | grep -q 1 || \
-		$(COMPOSE) exec db createdb -U app meetings_test$(COMPOSE) exec -e DATABASE_URL=postgresql+asyncpg://app:app@db:5432/meetings_test backend pytest -q
+        "SELECT 1 FROM pg_database WHERE datname='meetings_test'" | grep -q 1 || \
+        $(COMPOSE) exec db createdb -U app meetings_test
+	$(COMPOSE) exec -e DATABASE_URL=postgresql+asyncpg://app:app@db:5432/meetings_test backend pytest -q
 
 lint: ## Lint backend and frontend
 	$(COMPOSE) exec backend ruff check
@@ -109,11 +98,12 @@ report-now: ## Send an on-demand report request: make report-now WEEK=2026-W39
 	$(require-aws-credentials)
 	@test -n "$(WEEK)" || { echo "Usage: make report-now WEEK=2026-W39"; exit 1; }
 	@queue_url=$$($(call stack-output,$(REPORTS_STACK),ReportRequestsQueueUrl) | tr -d '[:space:]'); \
-		echo "Sending report request for $(WEEK) to$$queue_url"; \
-		$(AWS) sqs send-message --queue-url "$$queue_url" --message-body '{"week": "$(WEEK)", "source": "sqs"}'
+        echo "Sending report request for $(WEEK) to $$queue_url"; \
+        $(AWS) sqs send-message --queue-url "$$queue_url" --message-body '{"week": "$(WEEK)", "source": "sqs"}'
 
 aws-whoami: ## Verify the AWS credentials in .env
-	$(require-aws-credentials)$(AWS) sts get-caller-identity
+	$(require-aws-credentials)
+	$(AWS) sts get-caller-identity
 
 aws-deploy: ## Deploy everything: sign-in, then the backend, then the frontend built against both
 	@$(MAKE) --no-print-directory aws-deploy-auth
@@ -123,116 +113,121 @@ aws-deploy: ## Deploy everything: sign-in, then the backend, then the frontend b
 aws-deploy-auth: ## Create/update the Cognito user pool (email + password; Google when GOOGLE_CLIENT_ID is set)
 	$(require-aws-credentials)
 	@urls="http://localhost:$(or $(FRONTEND_PORT),3000)/"; \
-		site=$$($(call stack-output,$(FRONTEND_STACK),AllowedOrigins) 2>out.json | tr -d '[:space:]'); \
-		case "$$site" in ""|None) ;; *) urls="$$urls,$$(echo "$$site" | sed 's|,|/,|g')/" ;; esac; \
-		echo "Sign-in redirect URLs: $$urls"; \
-		test -n "$(GOOGLE_CLIENT_ID)" || echo "GOOGLE_CLIENT_ID is empty — Google sign-in stays off"; \
-		$(call wait-stack-idle,$(AUTH_STACK)); \$(call clear-failed-create,$(AUTH_STACK)); \$(AWS) cloudformation deploy \
-			--stack-name $(AUTH_STACK) \
-			--template-file infra/auth.yml \
-			--no-fail-on-empty-changeset \
-			$(STACK_TAGS) \
-			--parameter-overrides \
-				"ProjectName=$(PROJECT_NAME)" \
-				"AppUrls=$$urls" \
-				"GoogleClientId=$(GOOGLE_CLIENT_ID)" \
-				"GoogleClientSecret=$(GOOGLE_CLIENT_SECRET)"
+        site=$$($(call stack-output,$(FRONTEND_STACK),AllowedOrigins) 2>out.json | tr -d '[:space:]'); \
+        case "$$site" in ""|None) ;; *) urls="$$urls,$$(echo "$$site" | sed 's|,|/,|g')/" ;; esac; \
+        echo "Sign-in redirect URLs: $$urls"; \
+        test -n "$(GOOGLE_CLIENT_ID)" || echo "GOOGLE_CLIENT_ID is empty — Google sign-in stays off"; \
+        $(call wait-stack-idle,$(AUTH_STACK)); \
+        $(call clear-failed-create,$(AUTH_STACK)); \
+        $(AWS) cloudformation deploy \
+            --stack-name $(AUTH_STACK) \
+            --template-file infra/auth.yml \
+            --no-fail-on-empty-changeset \
+            $(STACK_TAGS) \
+            --parameter-overrides \
+                "ProjectName=$(PROJECT_NAME)" \
+                "AppUrls=$$urls" \
+                "GoogleClientId=$(GOOGLE_CLIENT_ID)" \
+                "GoogleClientSecret=$(GOOGLE_CLIENT_SECRET)"
 	@if [ -n "$(GOOGLE_CLIENT_ID)" ]; then \
-		echo "Google Cloud console → the OAuth client → Authorized redirect URIs must include:"; \
-		echo "  $$($(call stack-output,$(AUTH_STACK),GoogleRedirectUri) | tr -d '[:space:]')"; \
-	fi
+        echo "Google Cloud console → the OAuth client → Authorized redirect URIs must include:"; \
+        echo "  $$($(call stack-output,$(AUTH_STACK),GoogleRedirectUri) | tr -d '[:space:]')"; \
+    fi
 	@$(MAKE) --no-print-directory aws-auth-env
 
 aws-auth-env: ## Print the Cognito settings to put in .env for local development
 	@$(call stack-outputs,$(AUTH_STACK)) | awk -F '\t' ' \
-		$$1 == "UserPoolId" { print "COGNITO_USER_POOL_ID=" $$2 } \
-		$$1 == "UserPoolClientId" { print "COGNITO_CLIENT_ID=" $$2 } \
-		$$1 == "HostedDomain" { print "COGNITO_DOMAIN=" $$2 } \
-		$$1 == "GoogleEnabled" { print "COGNITO_GOOGLE_ENABLED=" $$2 }' | tr -d '\r'
+        $$1 == "UserPoolId" { print "COGNITO_USER_POOL_ID=" $$2 } \
+        $$1 == "UserPoolClientId" { print "COGNITO_CLIENT_ID=" $$2 } \
+        $$1 == "HostedDomain" { print "COGNITO_DOMAIN=" $$2 } \
+        $$1 == "GoogleEnabled" { print "COGNITO_GOOGLE_ENABLED=" $$2 }' | tr -d '\r'
 
 aws-ecr: ## Create the ECR repository for the backend image
-	$(require-aws-credentials)$(AWS) cloudformation deploy \
-		--stack-name $(ECR_STACK) \
-		--template-file infra/ecr.yml \
-		--no-fail-on-empty-changeset \
-		$(STACK_TAGS) \
-		--parameter-overrides "ProjectName=$(PROJECT_NAME)"
+	$(require-aws-credentials)
+	$(AWS) cloudformation deploy \
+        --stack-name $(ECR_STACK) \
+        --template-file infra/ecr.yml \
+        --no-fail-on-empty-changeset \
+        $(STACK_TAGS) \
+        --parameter-overrides "ProjectName=$(PROJECT_NAME)"
 
 aws-push: aws-ecr ## Build the backend Lambda image and push it to ECR
 	$(require-aws-credentials)
 	@repo=$$($(call stack-output,$(ECR_STACK),RepositoryUri) | tr -d '[:space:]'); \
-		echo "Pushing $$repo:$(IMAGE_TAG) ($(IMAGE_PLATFORM))"; \
-		$(AWS) ecr get-login-password | docker login --username AWS --password-stdin "$${repo%%/*}"; \
-		docker build --platform $(IMAGE_PLATFORM) --provenance=false \
-			-f backend/Dockerfile.lambda -t "$$repo:$(IMAGE_TAG)" ./backend; \
-		docker push "$$repo:$(IMAGE_TAG)"
+        echo "Pushing $$repo:$(IMAGE_TAG) ($(IMAGE_PLATFORM))"; \
+        $(AWS) ecr get-login-password | docker login --username AWS --password-stdin "$${repo%%/*}"; \
+        docker build --platform $(IMAGE_PLATFORM) --provenance=false \
+            -f backend/Dockerfile.lambda -t "$$repo:$(IMAGE_TAG)" ./backend; \
+        docker push "$$repo:$(IMAGE_TAG)"
 
 aws-deploy-backend: aws-push ## Deploy the backend to AWS (Lambda function URL + Aurora Serverless), then migrate
 	$(require-aws-credentials)
 	$(require-db-password)
 	@pool=$$($(call stack-output,$(AUTH_STACK),UserPoolId) 2> out.json | tr -d '[:space:]'); \
-		client=$$($(call stack-output,$(AUTH_STACK),UserPoolClientId) | tr -d '[:space:]'); \
-		issuer=$$($(call stack-output,$(AUTH_STACK),Issuer) | tr -d '[:space:]'); \
-		case "$$pool" in ""|None) echo "No user pool found — run: make aws-deploy-auth"; exit 1 ;; esac; \
-		jwks=$$(curl -fsS "$$issuer/.well-known/jwks.json" | base64 | tr -d '\n'); \
-		test -n "$$jwks" || { echo "Could not download $$issuer/.well-known/jwks.json"; exit 1; }; \
-		vpc=$$($(AWS) ec2 describe-vpcs --filters Name=isDefault,Values=true \
-		--query 'Vpcs[0].VpcId' --output text | tr -d '[:space:]'); \
-		test "$$vpc" != "None" -a -n "$$vpc" || { \
-			echo "No default VPC in $(AWS_REGION) — pass VpcId/SubnetIds yourself"; exit 1; }; \
-		subnets=$$($(AWS) ec2 describe-subnets \
-			--filters Name=vpc-id,Values=$$vpc Name=default-for-az,Values=true \
-			--query 'Subnets[].SubnetId' --output text | tr '[:space:]' ',' | sed 's/,*$$//'); \
-		repo=$$($(call stack-output,$(ECR_STACK),RepositoryUri) | tr -d '[:space:]'); \
-		digest=$$($(AWS) ecr describe-images --repository-name "$${repo#*/}" \
-			--image-ids imageTag=$(IMAGE_TAG) --query 'imageDetails[0].imageDigest' \
-			--output text | tr -d '[:space:]'); \
-		cors="$(AWS_CORS_ORIGINS)"; \
-		if [ -z "$$cors" ]; then \
-			cors=$$($(call stack-output,$(FRONTEND_STACK),AllowedOrigins) 2>out.json | tr -d '[:space:]'); \
-			case "$$cors" in ""|None) cors='*' ;; esac; \
-		fi; \
-		echo "vpc=$$vpc subnets=$$subnets image=$$repo@$$digest cors=$$cors"; \
-		echo "This takes ~15 minutes the first time (Aurora is the slow part)."; \
-		$(call wait-stack-idle,$(APP_STACK)); \$(call clear-failed-create,$(APP_STACK)); \$(AWS) cloudformation deploy \
-			--stack-name $(APP_STACK) \
-			--template-file infra/backend.yml \
-			--capabilities CAPABILITY_IAM \
-			--no-fail-on-empty-changeset \
-			$(STACK_TAGS) \
-			--parameter-overrides \
-				"ProjectName=$(PROJECT_NAME)" \
-				"VpcId=$$vpc" \
-				"SubnetIds=$$subnets" \
-				ImageUri="$$repo@$$digest" \
-				"Architecture=$(AWS_LAMBDA_ARCH)" \
-				"DbPassword=$(AWS_DB_PASSWORD)" \
-				"AppTimezone=$(APP_TIMEZONE)" \
-				"CorsOrigins=$$cors" \
-				"CognitoUserPoolId=$$pool" \
-				"CognitoClientId=$$client" \
-				"CognitoJwks=$$jwks"
+        client=$$($(call stack-output,$(AUTH_STACK),UserPoolClientId) | tr -d '[:space:]'); \
+        issuer=$$($(call stack-output,$(AUTH_STACK),Issuer) | tr -d '[:space:]'); \
+        case "$$pool" in ""|None) echo "No user pool found — run: make aws-deploy-auth"; exit 1 ;; esac; \
+        jwks=$$(curl -fsS "$$issuer/.well-known/jwks.json" | base64 | tr -d '\n'); \
+        test -n "$$jwks" || { echo "Could not download $$issuer/.well-known/jwks.json"; exit 1; }; \
+        vpc=$$($(AWS) ec2 describe-vpcs --filters Name=isDefault,Values=true \
+        --query 'Vpcs[0].VpcId' --output text | tr -d '[:space:]'); \
+        test "$$vpc" != "None" -a -n "$$vpc" || { \
+            echo "No default VPC in $(AWS_REGION) — pass VpcId/SubnetIds yourself"; exit 1; }; \
+        subnets=$$($(AWS) ec2 describe-subnets \
+            --filters Name=vpc-id,Values=$$vpc Name=default-for-az,Values=true \
+            --query 'Subnets[].SubnetId' --output text | tr '[:space:]' ',' | sed 's/,*$$//'); \
+        repo=$$($(call stack-output,$(ECR_STACK),RepositoryUri) | tr -d '[:space:]'); \
+        digest=$$($(AWS) ecr describe-images --repository-name "$${repo#*/}" \
+            --image-ids imageTag=$(IMAGE_TAG) --query 'imageDetails[0].imageDigest' \
+            --output text | tr -d '[:space:]'); \
+        cors="$(AWS_CORS_ORIGINS)"; \
+        if [ -z "$$cors" ]; then \
+            cors=$$($(call stack-output,$(FRONTEND_STACK),AllowedOrigins) 2>out.json | tr -d '[:space:]'); \
+            case "$$cors" in ""|None) cors='*' ;; esac; \
+        fi; \
+        echo "vpc=$$vpc subnets=$$subnets image=$$repo@$$digest cors=$$cors"; \
+        echo "This takes ~15 minutes the first time (Aurora is the slow part)."; \
+        $(call wait-stack-idle,$(APP_STACK)); \
+        $(call clear-failed-create,$(APP_STACK)); \
+        $(AWS) cloudformation deploy \
+            --stack-name $(APP_STACK) \
+            --template-file infra/backend.yml \
+            --capabilities CAPABILITY_IAM \
+            --no-fail-on-empty-changeset \
+            $(STACK_TAGS) \
+            --parameter-overrides \
+                "ProjectName=$(PROJECT_NAME)" \
+                "VpcId=$$vpc" \
+                "SubnetIds=$$subnets" \
+                ImageUri="$$repo@$$digest" \
+                "Architecture=$(AWS_LAMBDA_ARCH)" \
+                "DbPassword=$(AWS_DB_PASSWORD)" \
+                "AppTimezone=$(APP_TIMEZONE)" \
+                "CorsOrigins=$$cors" \
+                "CognitoUserPoolId=$$pool" \
+                "CognitoClientId=$$client" \
+                "CognitoJwks=$$jwks"
 	@$(MAKE) --no-print-directory aws-migrate
 	@$(MAKE) --no-print-directory aws-url
 
 aws-migrate: ## Apply database migrations (invokes the backend function directly)
 	@fn=$$($(call stack-output,$(APP_STACK),FunctionName) | tr -d '[:space:]'); \
-		echo "Migrating ($$fn)"; \
-		err=$$($(AWS) lambda invoke --function-name "$$fn" \
-			--cli-binary-format raw-in-base64-out --payload '{"action":"migrate"}' \
-			--query FunctionError --output text out.json | tr -d '[:space:]'); \
-		test "$$err" = "None" || { echo "Migration failed ($$err) — see make aws-logs"; exit 1; }
+        echo "Migrating ($$fn)"; \
+        err=$$($(AWS) lambda invoke --function-name "$$fn" \
+            --cli-binary-format raw-in-base64-out --payload '{"action":"migrate"}' \
+            --query FunctionError --output text out.json | tr -d '[:space:]'); \
+        test "$$err" = "None" || { echo "Migration failed ($$err) — see make aws-logs"; exit 1; }
 
 aws-url: ## Print the deployed API URL
 	@$(call stack-output,$(APP_STACK),ApiUrl)
 
 aws-status: ## Show the stack outputs and the API function's state
 	@$(AWS) cloudformation describe-stacks --stack-name $(APP_STACK) \
-		--query 'Stacks[0].Outputs' --output table
+        --query 'Stacks[0].Outputs' --output table
 	@fn=$$($(call stack-output,$(APP_STACK),FunctionName) | tr -d '[:space:]'); \
-		$(AWS) lambda get-function-configuration --function-name "$$fn" \
-			--query '{state:State,lastUpdate:LastUpdateStatus,arch:Architectures[0],memory:MemorySize}' \
-			--output table
+        $(AWS) lambda get-function-configuration --function-name "$$fn" \
+            --query '{state:State,lastUpdate:LastUpdateStatus,arch:Architectures[0],memory:MemorySize}' \
+            --output table
 
 aws-logs: ## Follow the backend function logs
 	$(AWS) logs tail /aws/lambda/$(PROJECT_NAME)-backend --follow
@@ -240,55 +235,69 @@ aws-logs: ## Follow the backend function logs
 aws-frontend-cert: ## Request and validate the HTTPS certificate for AWS_FRONTEND_DOMAIN (in us-east-1)
 	$(require-aws-credentials)
 	@test -n "$(AWS_FRONTEND_DOMAIN)" || { \
-		echo "AWS_FRONTEND_DOMAIN is empty — set it in .env (e.g. app.example.com)"; exit 1; }
+        echo "AWS_FRONTEND_DOMAIN is empty — set it in .env (e.g. app.example.com)"; exit 1; }
 	@$(CERT) ensure "$(AWS_FRONTEND_DOMAIN)"
 
 aws-deploy-frontend: ## Deploy the frontend to S3 + CloudFront, built against the deployed backend URL
 	$(require-aws-credentials)
 	@api=$$($(call stack-output,$(APP_STACK),ApiUrl) 2>out.json | tr -d '[:space:]'); \
-		test -n "$$api" -a "$$api" != "None" || { \
-			echo "No backend API found — run: make aws-deploy-backend"; exit 1; }; \
-		domain=""; \
-		if [ -n "$(AWS_FRONTEND_DOMAIN)" ]; then \
-			cert=$$($(CERT) find "$(AWS_FRONTEND_DOMAIN)"); \
-			test -n "$$cert" || { \
-				echo "No issued us-east-1 certificate for $(AWS_FRONTEND_DOMAIN) — run: make aws-frontend-cert"; \
-				exit 1; }; \
-			zone=$$($(CERT) zone "$(AWS_FRONTEND_DOMAIN)"); \
-			domain="DomainName=$(AWS_FRONTEND_DOMAIN) CertificateArn=$$cert HostedZoneId=$$zone"; \
-			echo "custom domain: $(AWS_FRONTEND_DOMAIN) (Route 53 zone:$${zone:-none})"; \
-		fi; \
-		$(call wait-stack-idle,$(FRONTEND_STACK)); \
-		$(call clear-failed-create,$(FRONTEND_STACK)); \
-		echo "A new CloudFront distribution takes ~5 minutes to come up."; \
-		$(AWS) cloudformation deploy \
-			--stack-name $(FRONTEND_STACK) \
-			--template-file infra/frontend.yml \
-			--no-fail-on-empty-changeset \
-			$(STACK_TAGS) \
-			--parameter-overrides \
-				"ProjectName=$(PROJECT_NAME)" \
-				"PricingPlan=$(or $(AWS_CLOUDFRONT_PLAN),PAY_AS_YOU_GO)" \ 			$$domain
-	@$(MAKE) --no-print-directory aws-deploy-auth @api=$$($(call stack-output,$(APP_STACK),ApiUrl) \vert{} tr -d '[:space:]'); \ 	auth=$$($(call stack-outputs,$(AUTH_STACK)) \vert{} tr -d '\r'); \ 	auth_out() { printf '\%s\n' "$$auth" \vert{} awk -F '\t' -v k="$$1" '$$1 == k { print$$2 }'; }; \ 	bucket=$$($(call stack-output,$(FRONTEND_STACK),BucketName) \vert{} tr -d '[:space:]'); \ 	dist=$$($(call stack-output,$(FRONTEND_STACK),DistributionId) \vert{} tr -d '[:space:]'); \ 	echo "Building the static export against $$api"; \
-		rm -rf frontend/out; \
-		docker build --target export --output type=local,dest=frontend/out \
-			--build-arg NEXT_PUBLIC_API_BASE_URL="$$api" \ 		--build-arg NEXT_PUBLIC_COGNITO_USER_POOL_ID="$$(auth_out UserPoolId)" \
-			--build-arg NEXT_PUBLIC_COGNITO_CLIENT_ID="$$(auth_out UserPoolClientId)" \ 		--build-arg NEXT_PUBLIC_COGNITO_DOMAIN="$$(auth_out HostedDomain)" \
-			--build-arg NEXT_PUBLIC_COGNITO_GOOGLE_ENABLED="$$(auth_out GoogleEnabled)" \ 		./frontend \vert{}\vert{} exit 1; \ 	echo "Uploading to s3://$$bucket"; \
-		$(AWS) s3 sync frontend/out "s3://$$bucket" --delete --exclude "*.html" \
-			--cache-control "public,max-age=31536000,immutable" --only-show-errors || exit 1; \
-		$(AWS) s3 sync frontend/out "s3://$$bucket" --delete --exclude "*" --include "*.html" \
-			--cache-control "no-cache" --only-show-errors || exit 1; \
-		$(AWS) cloudfront create-invalidation --distribution-id "$$dist" --paths "/*" \
-			--query 'Invalidation.Status' --output text
+        test -n "$$api" -a "$$api" != "None" || { \
+            echo "No backend API found — run: make aws-deploy-backend"; exit 1; }; \
+        domain=""; \
+        if [ -n "$(AWS_FRONTEND_DOMAIN)" ]; then \
+            cert=$$($(CERT) find "$(AWS_FRONTEND_DOMAIN)"); \
+            test -n "$$cert" || { \
+                echo "No issued us-east-1 certificate for $(AWS_FRONTEND_DOMAIN) — run: make aws-frontend-cert"; \
+                exit 1; }; \
+            zone=$$($(CERT) zone "$(AWS_FRONTEND_DOMAIN)"); \
+            domain="DomainName=$(AWS_FRONTEND_DOMAIN) CertificateArn=$$cert HostedZoneId=$$zone"; \
+            echo "custom domain: $(AWS_FRONTEND_DOMAIN) (Route 53 zone: $${zone:-none})"; \
+        fi; \
+        $(call wait-stack-idle,$(FRONTEND_STACK)); \
+        $(call clear-failed-create,$(FRONTEND_STACK)); \
+        echo "A new CloudFront distribution takes ~5 minutes to come up."; \
+        $(AWS) cloudformation deploy \
+            --stack-name $(FRONTEND_STACK) \
+            --template-file infra/frontend.yml \
+            --no-fail-on-empty-changeset \
+            $(STACK_TAGS) \
+            --parameter-overrides \
+                "ProjectName=$(PROJECT_NAME)" \
+                "PricingPlan=$(or $(AWS_CLOUDFRONT_PLAN),PAY_AS_YOU_GO)" \
+                $$domain
+	@$(MAKE) --no-print-directory aws-deploy-auth
+	@api=$$($(call stack-output,$(APP_STACK),ApiUrl) | tr -d '[:space:]'); \
+        auth=$$($(call stack-outputs,$(AUTH_STACK)) | tr -d '\r'); \
+        auth_out() { printf '%s\n' "$$auth" | awk -F '\t' -v k="$$1" '$$1 == k { print $$2 }'; }; \
+        bucket=$$($(call stack-output,$(FRONTEND_STACK),BucketName) | tr -d '[:space:]'); \
+        dist=$$($(call stack-output,$(FRONTEND_STACK),DistributionId) | tr -d '[:space:]'); \
+        echo "Building the static export against $$api"; \
+        rm -rf frontend/out; \
+        docker build --target export --output type=local,dest=frontend/out \
+            --build-arg NEXT_PUBLIC_API_BASE_URL="$$api" \
+            --build-arg NEXT_PUBLIC_COGNITO_USER_POOL_ID="$$(auth_out UserPoolId)" \
+            --build-arg NEXT_PUBLIC_COGNITO_CLIENT_ID="$$(auth_out UserPoolClientId)" \
+            --build-arg NEXT_PUBLIC_COGNITO_DOMAIN="$$(auth_out HostedDomain)" \
+            --build-arg NEXT_PUBLIC_COGNITO_GOOGLE_ENABLED="$$(auth_out GoogleEnabled)" \
+            ./frontend || exit 1; \
+        echo "Uploading to s3://$$bucket"; \
+        $(AWS) s3 sync frontend/out "s3://$$bucket" --delete --exclude "*.html" \
+            --cache-control "public,max-age=31536000,immutable" --only-show-errors || exit 1; \
+        $(AWS) s3 sync frontend/out "s3://$$bucket" --delete --exclude "*" --include "*.html" \
+            --cache-control "no-cache" --only-show-errors || exit 1; \
+        $(AWS) cloudfront create-invalidation --distribution-id "$$dist" --paths "/*" \
+            --query 'Invalidation.Status' --output text
 	@$(MAKE) --no-print-directory aws-frontend-url
-	@if [ -z "$(AWS_CORS_ORIGINS)" ]; then \ 	allowed=$$($(call stack-output,$(FRONTEND_STACK),AllowedOrigins) \vert{} tr -d '[:space:]'); \ 	fn=$$($(call stack-output,$(APP_STACK),FunctionName) \vert{} tr -d '[:space:]'); \ 	current=$$($(AWS) lambda get-function-configuration --function-name "$$fn" \
-			--query 'Environment.Variables.CORS_ORIGINS' --output text | tr -d '[:space:]'); \
-		test "$$current" = "$$allowed" || echo "The API still allows CORS_ORIGINS=$$current — run make aws-deploy-backend to limit it to$$allowed"; \
-	fi
+	@if [ -z "$(AWS_CORS_ORIGINS)" ]; then \
+        allowed=$$($(call stack-output,$(FRONTEND_STACK),AllowedOrigins) | tr -d '[:space:]'); \
+        fn=$$($(call stack-output,$(APP_STACK),FunctionName) | tr -d '[:space:]'); \
+        current=$$($(AWS) lambda get-function-configuration --function-name "$$fn" \
+            --query 'Environment.Variables.CORS_ORIGINS' --output text | tr -d '[:space:]'); \
+        test "$$current" = "$$allowed" || echo "The API still allows CORS_ORIGINS=$$current — run make aws-deploy-backend to limit it to $$allowed"; \
+    fi
 	@if [ -n "$(AWS_FRONTEND_DOMAIN)" ] && [ -z "$$($(CERT) zone "$(AWS_FRONTEND_DOMAIN)")" ]; then \
-		echo "Point $(AWS_FRONTEND_DOMAIN) at the distribution: CNAME$$($(call stack-output,$(FRONTEND_STACK),DistributionDomain) | tr -d '[:space:]')"; \
-	fi
+        echo "Point $(AWS_FRONTEND_DOMAIN) at the distribution: CNAME $$($(call stack-output,$(FRONTEND_STACK),DistributionDomain) | tr -d '[:space:]')"; \
+    fi
 
 aws-frontend-url: ## Print the deployed site URL
 	@$(call stack-output,$(FRONTEND_STACK),SiteUrl)
@@ -296,16 +305,27 @@ aws-frontend-url: ## Print the deployed site URL
 aws-destroy: ## Delete every stack, including the database and its data
 	$(require-aws-credentials)
 	@printf 'Delete %s, %s, %s and %s? The Aurora cluster and all its data, and every user account, go with them (no snapshot). Type yes: ' \
-		"$(FRONTEND_STACK)" "$(APP_STACK)" "$(AUTH_STACK)" "$(ECR_STACK)"; \ 	read answer; test "$$answer" = "yes" \vert{}\vert{} { echo "Aborted."; exit 1; } @bucket=$$($(call stack-output,$(FRONTEND_STACK),BucketName) 2>out.json \vert{} tr -d '[:space:]'); \ 	if [ -n "$$bucket" ] && [ "$$bucket" != "None" ]; then \ 		echo "Emptying s3://$$bucket"; \
-			$(AWS) s3 rm "s3://$$bucket" --recursive --only-show-errors || true; \
-		fi
-	-$(AWS) cloudformation delete-stack --stack-name$(FRONTEND_STACK)
-	-$(AWS) cloudformation wait stack-delete-complete --stack-name$(FRONTEND_STACK)
+        "$(FRONTEND_STACK)" "$(APP_STACK)" "$(AUTH_STACK)" "$(ECR_STACK)"; \
+        read answer; test "$$answer" = "yes" || { echo "Aborted."; exit 1; }
+	@bucket=$$($(call stack-output,$(FRONTEND_STACK),BucketName) 2>out.json | tr -d '[:space:]'); \
+        if [ -n "$$bucket" ] && [ "$$bucket" != "None" ]; then \
+            echo "Emptying s3://$$bucket"; \
+            $(AWS) s3 rm "s3://$$bucket" --recursive --only-show-errors || true; \
+        fi
+	-$(AWS) cloudformation delete-stack --stack-name $(FRONTEND_STACK)
+	-$(AWS) cloudformation wait stack-delete-complete --stack-name $(FRONTEND_STACK)
 	@echo "Deleting $(APP_STACK) — Lambda releases its VPC network interfaces slowly, allow ~20 minutes."
-	$(AWS) cloudformation delete-stack --stack-name$(APP_STACK)
-	$(AWS) cloudformation wait stack-delete-complete --stack-name$(APP_STACK)
-	$(AWS) cloudformation delete-stack --stack-name$(AUTH_STACK)
-	$(AWS) cloudformation wait stack-delete-complete --stack-name$(AUTH_STACK)
-	$(AWS) cloudformation delete-stack --stack-name$(ECR_STACK)
-	$(AWS) cloudformation wait stack-delete-complete --stack-name$(ECR_STACK)
+	$(AWS) cloudformation delete-stack --stack-name $(APP_STACK)
+	$(AWS) cloudformation wait stack-delete-complete --stack-name $(APP_STACK)
+	$(AWS) cloudformation delete-stack --stack-name $(AUTH_STACK)
+	$(AWS) cloudformation wait stack-delete-complete --stack-name $(AUTH_STACK)
+	$(AWS) cloudformation delete-stack --stack-name $(ECR_STACK)
+	$(AWS) cloudformation wait stack-delete-complete --stack-name $(ECR_STACK)
 	@echo "All stacks deleted."
+
+llm-hello: ## Run a simple Bedrock LLM call to verify access and credentials
+	python scripts/llm_hello.py
+
+.PHONY: parse
+parse:
+	python scripts/test_parse.py

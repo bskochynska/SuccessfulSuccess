@@ -1,3 +1,11 @@
 {
-    "python-envs.defaultEnvManager": "ms-python.python:system"
+    "python-envs.defaultEnvManager": "ms-python.python:system",
+    "python.analysis.extraPaths": ["./backend"],
+    "python.autoComplete.extraPaths": ["./backend"],
+  "pylint.args": [
+    "--init-hook=import sys; sys.path.append('./backend')"
+  ],
+  "python.analysis.extraPaths": [
+    "./backend"
+  ]
 }

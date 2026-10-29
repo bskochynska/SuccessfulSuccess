@@ -1,22 +1,25 @@
-# The image AWS Lambda runs (`make aws-push`). The plain Dockerfile stays the
-# local/compose image; this one swaps uvicorn for the Lambda runtime and serves
-# the same app through app.lambda_handler.
 FROM public.ecr.aws/lambda/python:3.12
 
 ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH="/var/task"
 
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+WORKDIR /var/task
 
-WORKDIR ${LAMBDA_TASK_ROOT}
+# 1. Встановлюємо uv безпосередньо через pip
+RUN pip install --no-cache-dir uv
 
-# Lambda's filesystem is read-only, so compile the bytecode at build time.
+# 2. Встановлюємо залежності проєкту
 COPY pyproject.toml ./
-RUN uv pip install --no-cache --compile-bytecode --target "${LAMBDA_TASK_ROOT}" -r pyproject.toml
+RUN uv pip install --no-cache --compile-bytecode --target "/var/task" -r pyproject.toml
 
-COPY alembic.ini ./
-COPY alembic ./alembic
-COPY app ./app
+# 3. Копіюємо виправлену папку app
+COPY app /var/task/app
 
-# Serves the function URL, and runs migrations when invoked with {"action": "migrate"}.
-CMD ["app.lambda_handler.handler"]
+# 4. Створюємо пакетні файли
+RUN touch /var/task/__init__.py && \
+    touch /var/task/app/__init__.py && \
+    touch /var/task/app/ai/__init__.py && \
+    touch /var/task/app/api/__init__.py
+
+CMD ["app.ai.agenda_lambda.handler"]

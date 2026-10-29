@@ -1,0 +1,80 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'CloudFormation infrastructure for Agenda Parser Lambda service via Bedrock'
+
+Parameters:
+  EcrImageUri:
+    Type: String
+  FrontendCorsOrigin:
+    Type: String
+    Default: 'http://localhost:3000'
+  CognitoUserPoolId:
+    Type: String
+  CognitoClientId:
+    Type: String
+
+Resources:
+  AgendaLambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub '${AWS::StackName}-agenda-lambda-role'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: BedrockAccessPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - bedrock:InvokeModel
+                  - bedrock:InvokeModelWithResponseStream
+                  - bedrock:*
+                Resource: '*'
+
+  AgendaLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub '${AWS::StackName}-agenda-parser'
+      PackageType: Image
+      Code:
+        ImageUri: !Ref EcrImageUri
+      Role: !GetAtt AgendaLambdaExecutionRole.Arn
+      MemorySize: 512
+      Timeout: 30
+      Environment:
+        Variables:
+          COGNITO_USER_POOL_ID: !Ref CognitoUserPoolId
+          COGNITO_CLIENT_ID: !Ref CognitoClientId
+          COGNITO_REGION: !Ref 'AWS::Region'
+          APP_TIMEZONE: 'Europe/Kyiv'
+
+  AgendaLambdaUrl:
+    Type: AWS::Lambda::Url
+    Properties:
+      TargetFunctionArn: !GetAtt AgendaLambdaFunction.Arn
+      AuthType: NONE
+      Cors:
+        AllowOrigins:
+          - '*'
+
+  AgendaLambdaUrlPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt AgendaLambdaFunction.Arn
+      Action: lambda:InvokeFunctionUrl
+      Principal: '*'
+      FunctionUrlAuthType: NONE
+
+Outputs:
+  AgendaLambdaFunctionUrl:
+    Description: 'Public URL of the Agenda Parser Lambda Function'
+    Value: !GetAtt AgendaLambdaUrl.FunctionUrl

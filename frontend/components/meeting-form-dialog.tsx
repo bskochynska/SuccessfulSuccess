@@ -83,13 +83,20 @@ function participantErrors(rows: unknown): Record<number, string | undefined> {
 
 function defaultValues(meeting?: Meeting): FormValues {
   if (!meeting) {
+    const now = new Date()
+    const currentHour = now.getHours()
+    const startHour = (currentHour + 1) % 24
+    const endHour = (currentHour + 2) % 24
+
+    const pad = (n: number) => String(n).padStart(2, "0")
+
     return {
       name: "",
       description: "",
       location: "",
       date: new Date(),
-      startTime: "10:00",
-      endTime: "11:00",
+      startTime: `${pad(startHour)}:00`,
+      endTime: `${pad(endHour)}:00`,
       participants: [{ name: "", email: "" }],
     }
   }
@@ -221,158 +228,157 @@ export function MeetingFormDialog({
   })
 
   return (
-    <>
-      <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-h-[90svh] overflow-y-auto sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle>{isEdit ? "Edit meeting" : "New meeting"}</DialogTitle>
-            <DialogDescription>
-              {isEdit
-                ? "Change the details, time slot or participants."
-                : "Give it a name, a time slot and the people who should be there."}
-            </DialogDescription>
-          </DialogHeader>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-h-[90svh] overflow-y-auto sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>{isEdit ? "Edit meeting" : "New meeting"}</DialogTitle>
+          <DialogDescription>
+            {isEdit
+              ? "Change the details, time slot or participants."
+              : "Give it a name, a time slot and the people who should be there."}
+          </DialogDescription>
+        </DialogHeader>
 
-          <form onSubmit={onSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
-              <Input
-                id="name"
-                placeholder="Sprint planning"
-                aria-invalid={!!errors.name}
-                aria-describedby={errors.name ? "name-error" : undefined}
-                {...register("name")}
-              />
-              {errors.name ? (
-                <p id="name-error" className="text-destructive text-sm">
-                  {errors.name.message}
-                </p>
-              ) : null}
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="description">Description</Label>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="h-7 text-xs text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-950"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    setAiModalOpen(true)
-                  }}
-                >
-                  <Sparkles className="mr-1 size-3.5" />
-                  Paste Agenda (AI)
-                </Button>
-              </div>
-              <Textarea
-                id="description"
-                rows={4}
-                placeholder="What is this meeting about?"
-                {...register("description")}
-              />
-              {errors.description ? (
-                <p className="text-destructive text-sm">{errors.description.message}</p>
-              ) : null}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="location">Location</Label>
-              <Input id="location" placeholder="Room 3 or a meeting link" {...register("location")} />
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-3">
-              <div className="space-y-2 sm:col-span-1">
-                <Label>Date</Label>
-                <Controller
-                  control={control}
-                  name="date"
-                  render={({ field }) => (
-                    <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
-                      <PopoverTrigger asChild>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="w-full justify-start font-normal"
-                        >
-                          <CalendarIcon className="size-4" aria-hidden />
-                          {toIsoDate(field.value)}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={(date) => {
-                            if (date) field.onChange(date)
-                            setDatePickerOpen(false)
-                          }}
-                          autoFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  )}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="startTime">Start</Label>
-                <Input id="startTime" type="time" step={900} {...register("startTime")} />
-                {errors.startTime ? (
-                  <p className="text-destructive text-sm">{errors.startTime.message}</p>
-                ) : null}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="endTime">End</Label>
-                <Input id="endTime" type="time" step={900} {...register("endTime")} />
-                {errors.endTime ? (
-                  <p className="text-destructive text-sm">{errors.endTime.message}</p>
-                ) : null}
-              </div>
-            </div>
-
-            <Controller
-              control={control}
-              name="participants"
-              render={({ field }) => (
-                <ParticipantsInput
-                  value={field.value}
-                  onChange={field.onChange}
-                  errors={participantErrors(errors.participants)}
-                />
-              )}
+        <form onSubmit={onSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="name">Name</Label>
+            <Input
+              id="name"
+              placeholder="Sprint planning"
+              aria-invalid={!!errors.name}
+              aria-describedby={errors.name ? "name-error" : undefined}
+              {...register("name")}
             />
-            {errors.participants?.message ? (
-              <p className="text-destructive text-sm">{errors.participants.message}</p>
+            {errors.name ? (
+              <p id="name-error" className="text-destructive text-sm">
+                {errors.name.message}
+              </p>
             ) : null}
+          </div>
 
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-                Cancel
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="description">Description</Label>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-7 text-xs text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-950"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  setAiModalOpen(true)
+                }}
+              >
+                <Sparkles className="mr-1 size-3.5" />
+                Paste Agenda (AI)
               </Button>
-              <Button type="submit" disabled={isSubmitting}>
-                {isEdit
-                  ? isSubmitting
-                    ? "Saving…"
-                    : "Save changes"
-                  : isSubmitting
-                    ? "Creating…"
-                    : "Create meeting"}
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+            </div>
+            <Textarea
+              id="description"
+              rows={4}
+              placeholder="What is this meeting about?"
+              {...register("description")}
+            />
+            {errors.description ? (
+              <p className="text-destructive text-sm">{errors.description.message}</p>
+            ) : null}
+          </div>
 
-      <PasteAgendaModal
-        isOpen={aiModalOpen}
-        onClose={() => setAiModalOpen(false)}
-        onItemsParsed={handleItemsParsed}
-      />
-    </>
+          <div className="space-y-2">
+            <Label htmlFor="location">Location</Label>
+            <Input id="location" placeholder="Room 3 or a meeting link" {...register("location")} />
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="space-y-2 sm:col-span-1">
+              <Label>Date</Label>
+              <Controller
+                control={control}
+                name="date"
+                render={({ field }) => (
+                  <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="w-full justify-start font-normal"
+                      >
+                        <CalendarIcon className="size-4" aria-hidden />
+                        {toIsoDate(field.value)}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={(date) => {
+                          if (date) field.onChange(date)
+                          setDatePickerOpen(false)
+                        }}
+                        autoFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                )}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="startTime">Start</Label>
+              <Input id="startTime" type="time" step={900} {...register("startTime")} />
+              {errors.startTime ? (
+                <p className="text-destructive text-sm">{errors.startTime.message}</p>
+              ) : null}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="endTime">End</Label>
+              <Input id="endTime" type="time" step={900} {...register("endTime")} />
+              {errors.endTime ? (
+                <p className="text-destructive text-sm">{errors.endTime.message}</p>
+              ) : null}
+            </div>
+          </div>
+
+          <Controller
+            control={control}
+            name="participants"
+            render={({ field }) => (
+              <ParticipantsInput
+                value={field.value}
+                onChange={field.onChange}
+                errors={participantErrors(errors.participants)}
+              />
+            )}
+          />
+          {errors.participants?.message ? (
+            <p className="text-destructive text-sm">{errors.participants.message}</p>
+          ) : null}
+
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isEdit
+                ? isSubmitting
+                  ? "Saving…"
+                  : "Save changes"
+                : isSubmitting
+                  ? "Creating…"
+                  : "Create meeting"}
+            </Button>
+          </DialogFooter>
+        </form>
+
+        {/* Вкладений модал Bedrock AI всередині основного DialogContent */}
+        <PasteAgendaModal
+          isOpen={aiModalOpen}
+          onClose={() => setAiModalOpen(false)}
+          onItemsParsed={handleItemsParsed}
+        />
+      </DialogContent>
+    </Dialog>
   )
 }

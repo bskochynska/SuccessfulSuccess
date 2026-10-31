@@ -397,3 +397,6 @@ There is no deploy (CD) stage — no target is configured yet.
 We build Spry as a monorepo for two main reasons:
 1. **Atomic changes:** A single commit changes both the API and the client that calls it, preventing contract drift.
 2. **Context window for AI:** The entire pipeline lives in one tree, allowing an AI agent to read endpoints, models, migrations, and UI components in a single pass without guessing contracts.
+
+## Infrastructure (Terraform)
+Managed via HCP Terraform. Run make infra-plan or push to main branch to trigger automated runs.

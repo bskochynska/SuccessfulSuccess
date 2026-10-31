@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { parseAgendaText, AgendaItem } from '@/lib/agendaApi';
 
 interface PasteAgendaModalProps {
@@ -19,6 +19,15 @@ export const PasteAgendaModal: React.FC<PasteAgendaModalProps> = ({
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      setTimeout(() => {
+        textareaRef.current?.focus();
+      }, 50);
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -57,31 +66,31 @@ export const PasteAgendaModal: React.FC<PasteAgendaModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 p-4 pointer-events-auto"
       onClick={(e) => e.stopPropagation()}
     >
       <div
-        className="w-full max-w-lg rounded-lg bg-white p-6 shadow-2xl dark:bg-gray-800"
+        className="relative z-[10000] w-full max-w-lg rounded-lg bg-white p-6 shadow-2xl pointer-events-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white">
+        <h2 className="mb-4 text-xl font-bold text-gray-900">
           Paste an Agenda (Bedrock AI)
         </h2>
 
         {error && (
-          <div className="mb-4 rounded bg-red-100 p-3 text-sm text-red-700 dark:bg-red-900/30 dark:text-red-400">
+          <div className="mb-4 rounded bg-red-100 p-3 text-sm text-red-700">
             {error}
           </div>
         )}
 
         <textarea
-          className="h-40 w-full rounded border border-gray-300 p-3 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+          ref={textareaRef}
+          className="h-40 w-full rounded border border-gray-300 bg-white p-3 text-sm text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 pointer-events-auto cursor-text"
           placeholder="Paste meeting text or raw agenda here..."
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => e.stopPropagation()}
           disabled={loading}
-          autoFocus
         />
 
         <div className="mt-4 flex justify-end gap-3">
@@ -89,7 +98,7 @@ export const PasteAgendaModal: React.FC<PasteAgendaModalProps> = ({
             type="button"
             onClick={handleClose}
             disabled={loading}
-            className="rounded px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+            className="rounded px-4 py-2 text-sm text-gray-600 hover:bg-gray-100"
           >
             Cancel
           </button>

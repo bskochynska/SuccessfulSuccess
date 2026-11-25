@@ -1,402 +1,358 @@
-# SuccessfulSuccess — Meetings
+# SuccessfulSuccess — Lab 9: One Project, Two Clouds
 
-[![Style](https://github.com/dobosevych/SuccessfulSuccess/actions/workflows/style.yml/badge.svg)](https://github.com/dobosevych/SuccessfulSuccess/actions/workflows/style.yml)
+## Deployment Guide
 
-A small web app for today's meetings: see what is on today (name, description,
-participants) and add a new one from the UI. Built to `SPEC.md`.
+### AWS Services (Staying Put)
 
-- **Frontend** — Next.js (App Router) + shadcn/ui, styled after Canva's visual language
-- **Backend** — FastAPI + SQLAlchemy 2 (async) + Alembic
-- **Database** — PostgreSQL 17
+The following services remain on AWS and are **not** migrated to GCP:
 
-## Quick start
+- **Cognito** (`us-east-1`) — User authentication (email + password, Google OAuth)
+  - Pool ID: `${COGNITO_USER_POOL_ID}` (from `.env`)
+  - Client ID: `${COGNITO_CLIENT_ID}` (from `.env`)
+  - Cloud Run validates JWT tokens issued by Cognito via OIDC discovery
 
-```bash
-cp .env.example .env
-docker compose up --build
-```
+- **SES** (`us-east-1`) — Email delivery (infrastructure ready, not yet integrated in v1)
+  - Credentials stored in GCP Secret Manager for Cloud Run access
+  - Future labs will integrate with Cloud Run
 
-Then open:
+- **Lambda + Bedrock** (`us-east-1`) — AI agenda parsing
+  - Agenda parser function: `${AGENDA_PARSER_FUNCTION_URL}` (from terraform outputs)
+  - Cloud Run can call the public Lambda URL if needed
+  - Full migration to Vertex AI deferred to future lab
 
-| What | URL |
-|------|-----|
-| App | http://localhost:3000 |
-| API docs (Swagger) | http://localhost:8000/docs |
-| Health check | http://localhost:8000/health |
+### GCP Services (New)
 
-The backend applies migrations on start.
+Deployed in **us-central1** via `gcp/` Terraform configuration:
 
-### Sign-in (Cognito)
+| Service | Purpose | Details |
+|---|---|---|
+| **Cloud Run v2** | Serverless API | `spry-api` service, min=0/max=100, $0/month (within free tier) |
+| **Cloud SQL** | PostgreSQL database | `db-f1-micro`, 10 GB SSD, ~$9.37/month running (~$1.70/month stopped) |
+| **Artifact Registry** | Docker registry | `spry-repo` for backend images (0.5 GB free tier) |
+| **Secret Manager** | Secrets storage | DB password, AWS SES credentials (6 active secret versions free) |
+| **Firebase Hosting** | Frontend CDN | (Optional) Next.js static deployment (free Spark plan) |
 
-Every page except the login page, and every `/api/v1` endpoint, needs a
-signed-in user, and each user sees only their own meetings. Sign-in is an AWS
-Cognito user pool (`infra/auth.yml`): email + password, and Google when it is
-configured. Even for local development the pool lives in AWS (it is free at
-this scale):
+---
 
-```bash
-make aws-deploy-auth   # create/update the user pool; allows http://localhost:$FRONTEND_PORT/
-make aws-auth-env      # prints COGNITO_* lines: paste them into .env
-docker compose up -d   # restart so the API and the frontend pick them up
-```
+## Local Setup (for Testing)
 
-**Google sign-in** (optional): in Google Cloud console create an OAuth client of
-type *Web application*, put its id and secret in `.env` as `GOOGLE_CLIENT_ID` /
-`GOOGLE_CLIENT_SECRET`, run `make aws-deploy-auth`, and add the redirect URI it
-prints (`https://<prefix>.auth.<region>.amazoncognito.com/oauth2/idpresponse`)
-to the client's *Authorized redirect URIs*. Without it the Google button says
-Google sign-in is not enabled.
+### Prerequisites
 
-The first time someone signs in, the frontend sends their ID token to
-`POST /api/v1/me/sync`, which stores their profile (email, name, picture,
-provider, last login) in the `users` table. Meetings reference `users.id`, the
-Cognito `sub`.
+- Docker & Docker Compose
+- Node.js 20+
+- `gcloud` CLI (for GCP deployment only)
 
-Demo data is per user: `make seed owner=<sub>` adds a few meetings for today to
-that user (their `sub` is on the user's page in the Cognito console, or `id` in
-`GET /api/v1/me`).
-
-> **Ports already in use?** Every host port is configurable in `.env`
-> (`FRONTEND_PORT`, `BACKEND_PORT`, `POSTGRES_PORT`). If you change the frontend
-> or backend port, update `CORS_ORIGINS` and `NEXT_PUBLIC_API_BASE_URL` to match —
-> the browser talks to the published host port, not the compose service name.
-
-## Common tasks
+### 1. Build Backend Docker Image
 
 ```bash
-make up          # start the stack
-make down        # stop it
-make down-v      # stop it and drop the database volume
-make test        # backend test suite (creates meetings_test automatically)
-make lint        # ruff + eslint
-make migrate     # alembic upgrade head
-make seed owner=<sub>  # demo meetings for today for one user
-make psql        # psql shell against the app database
-make help        # everything else
+docker build -t spry-backend:latest ./backend --build-arg INSTALL_DEV=true
 ```
 
-## Windows
+This removes the Lambda entrypoint and creates a standard HTTP server listening on `PORT` (default 8080).
 
-The same `make` targets work on Windows, with Docker Desktop (WSL 2 backend)
-and [Git for Windows](https://git-scm.com/download/win) installed. There is no
-need to install GNU make first: `make.cmd` in the repository root runs the
-Makefile, and when `make.exe` is missing it offers to install it with winget
-(`ezwinports.make`) and carries on.
-
-```powershell
-Copy-Item .env.example .env
-.\make help        # PowerShell only runs scripts from the current folder with .\
-.\make up-build
-```
-
-In `cmd.exe`, plain `make help` finds `make.cmd`; once make is installed,
-`make help` works everywhere.
-
-Every recipe runs in Git's bash (`C:/Program Files/Git` by default; pass
-`GIT_HOME=...` if it is installed elsewhere), so `make test`, `make seed`, the
-`aws-*` targets and the rest behave as on macOS and Linux. Inside WSL, plain
-`make` works as on Linux.
-
-Things that are already taken care of, and why:
-
-- `.gitattributes` checks every file out with LF line endings. Git on Windows
-  converts to CRLF by default, and a CRLF `entrypoint.sh` stops the backend
-  container with `exec /app/entrypoint.sh: no such file or directory`. A clone
-  made before `.gitattributes` existed keeps its CRLF files until you run
-  `git rm --cached -r . && git reset --hard` (this discards local changes).
-- File-change events from a Windows folder do not reach the containers, so hot
-  reload polls: `WATCHPACK_POLLING` for Next.js, `WATCHFILES_FORCE_POLLING` for
-  uvicorn. For faster reloads keep the clone inside WSL rather than on `C:\`.
-- Git's bash rewrites arguments that look like paths (`/aws` becomes
-  `C:/Program Files/Git/aws`); the Makefile turns that off with
-  `MSYS_NO_PATHCONV`.
-- Keep `.env` with LF line endings (copying `.env.example` does): `make` reads
-  it directly, and a CRLF `.env` leaves a stray `\r` on every value.
-
-## Deploy to AWS
-
-`infra/` holds four CloudFormation templates: `auth.yml` (Cognito sign-in),
-`ecr.yml` (image registry), `backend.yml` (API and database) and `frontend.yml`
-(site). `make` reads `.env`,
-so the `aws-*` targets pick up the credentials and settings from there; `.env` is
-gitignored, so real keys never reach the repository. The AWS CLI runs in the
-`amazon/aws-cli` container, so nothing has to be installed on the host besides
-Docker (`AWS=aws make aws-deploy` uses a local CLI instead, which is noticeably
-faster).
-
-```
-browser ──https──→ CloudFront (optional custom domain) → private S3 bucket (Next.js static export)
-   └────https──→ Lambda function URL → Lambda → Aurora Serverless v2 :5432
-```
-
-Every resource lives in `AWS_REGION`, **us-east-1** by default, which is also
-where CloudFront reads its certificates from. There is no API Gateway or load
-balancer: the browser calls the API on its function URL, and FastAPI's CORS
-settings allow it.
-
-Every stack is tagged `PROJECT_NAME=<value of PROJECT_NAME>`, and every resource
-that accepts tags also carries it explicitly in the templates. Filter by it in
-Cost Explorer or Resource Groups to see everything the project owns.
-
-### One command
+### 2. Start PostgreSQL
 
 ```bash
-make aws-whoami   # check the credentials work
-make aws-deploy   # sign-in, then the backend, then the frontend built against both
+docker run -d \
+  --name spry-db \
+  --network spry-local \
+  -e POSTGRES_USER=appuser \
+  -e POSTGRES_PASSWORD=apppass \
+  -e POSTGRES_DB=meetings \
+  -p 5432:5432 \
+  postgres:17-alpine
 ```
 
-`aws-deploy` runs `aws-deploy-auth` and then the two steps below in order: the
-backend checks tokens from the user pool, and the frontend bakes the API URL and
-the pool's ids into its build. Each step can also run on its own.
-
-The backend Lambda sits in a VPC with no internet access, so it cannot download
-the pool's signing keys itself; `aws-deploy-backend` fetches them
-(`<issuer>/.well-known/jwks.json`) and passes them in as `COGNITO_JWKS`.
-`aws-deploy-frontend` re-deploys the auth stack once the CloudFront URL exists,
-so Cognito may redirect back to the site after Google sign-in.
-
-Fill these in `.env` first:
+Wait for healthcheck:
 
 ```bash
-AWS_ACCESS_KEY_ID=...        # an IAM user, not root access keys
-AWS_SECRET_ACCESS_KEY=...
-AWS_REGION=us-east-1
-PROJECT_NAME=successfulsuccess   # prefixes every resource name, and the PROJECT_NAME tag
-AWS_DB_PASSWORD=...          # 8-41 chars, [A-Za-z0-9_-] only
-AWS_CORS_ORIGINS=            # empty: follow the frontend's URLs (* until it exists)
-GOOGLE_CLIENT_ID=            # optional: Google sign-in (see "Sign-in" above)
-GOOGLE_CLIENT_SECRET=
-AWS_FRONTEND_DOMAIN=         # optional, e.g. app.example.com
+docker exec spry-db pg_isready -U appuser -d meetings
 ```
 
-### 1. Backend — Lambda function URL, Aurora Serverless v2
+### 3. Run Migrations
 
 ```bash
-make aws-deploy-backend   # ECR + build & push + create/update the stack + migrate, prints the URL
+docker run --rm \
+  --network spry-local \
+  -e DATABASE_URL="postgresql+asyncpg://appuser:apppass@spry-db:5432/meetings" \
+  -e RUN_MIGRATIONS_ON_START=true \
+  spry-backend:latest \
+  alembic upgrade head
 ```
 
-The API runs as a **Lambda function** from a container image
-(`backend/Dockerfile.lambda`): the same FastAPI app, adapted to Lambda by
-[Mangum](https://github.com/Kludex/mangum) in `app/lambda_handler.py`. Requests
-reach it through its **function URL** (`https://<id>.lambda-url.<region>.on.aws`),
-Lambda's own public HTTPS endpoint, and that URL is the backend URL the frontend
-is built with. FastAPI keeps doing the routing, CORS and error envelope exactly
-as it does locally. `backend/Dockerfile` stays the local/compose image.
-
-The database is an **Aurora Serverless v2** PostgreSQL cluster with one
-`db.serverless` writer at the smallest size Aurora allows: it scales between
-0 and 1 ACU (`DbMinCapacity`, `DbMaxCapacity`) and **pauses after 5 idle
-minutes** (also the minimum), so an unused deployment
-pays only for storage. The first connection after a pause waits ~15 s while it
-resumes; the function's 60 s timeout covers that.
-
-The function sits in the account's **default VPC**, next to the cluster, so the
-database is never public: its security group only accepts the function's. The
-function needs nothing else on the network, so there is no NAT gateway.
-
-Migrations run in the same function: invoked directly with
-`{"action": "migrate"}` it applies them instead of serving a request. Function
-URL events never carry that key, so no web request can trigger it.
-`make aws-deploy-backend` invokes it after every deploy, so migrations run once
-per deploy rather than racing on each cold start.
-
-The first deploy takes ~15 minutes; Aurora is the slow part. It is idempotent —
-run it again to ship a new version. The image is passed to the stack by digest,
-not by tag, so every push really does update the function. If the stack is
-still busy with an earlier update, the target waits for it rather than failing.
-
-| Command | What it does |
-|---------|--------------|
-| `make aws-url` | Print the API URL (`/docs` for Swagger, `/health` for the check) |
-| `make aws-status` | Stack outputs plus the API function's state |
-| `make aws-logs` | Follow the function logs from CloudWatch |
-| `make aws-migrate` | Apply migrations again on their own |
-| `make aws-destroy` | Delete every stack (asks first — the database goes too) |
-
-The image is built for `AWS_LAMBDA_ARCH` (`x86_64` by default).
-`AWS_LAMBDA_ARCH=arm64 make aws-deploy-backend` is ~20% cheaper and builds
-natively on Apple Silicon. The image platform follows this variable, so the two
-cannot drift apart. The build passes `--provenance=false` because Lambda rejects
-the multi-manifest image index that BuildKit otherwise pushes.
-
-### 2. Frontend — S3 + CloudFront
+### 4. Start Backend (Cloud Run Configuration)
 
 ```bash
-make aws-deploy-frontend   # create/update the stack, build against the API URL, upload
-make aws-frontend-url      # print the site URL
+docker run -d \
+  --name spry-api \
+  --network spry-local \
+  -p 8080:8080 \
+  -e PORT=8080 \
+  -e DATABASE_URL="postgresql+asyncpg://appuser:apppass@spry-db:5432/meetings" \
+  -e APP_TIMEZONE="Europe/Kyiv" \
+  -e CORS_ORIGINS="http://localhost:3000,http://localhost:3001" \
+  -e LOG_LEVEL=INFO \
+  -e RUN_MIGRATIONS_ON_START=false \
+  spry-backend:latest
 ```
 
-The target refuses to run until the backend stack exists. It reads the
-backend's function URL from that stack, builds the Next.js **static export** in
-Docker with `NEXT_PUBLIC_API_BASE_URL` set to it, syncs the files to a
-**private S3 bucket** and invalidates the **CloudFront** distribution in front
-of it. The site is served over HTTPS at `https://<id>.cloudfront.net`. A new
-distribution takes ~5 minutes to come up.
-
-- The distribution is on CloudFront's **flat-rate Free plan**
-  (`AWS::PricingPlanManager::Subscription`): $0 a month for 1M requests and
-  100 GB, with no overage charges, WAF and DDoS protection included. The plan
-  requires a web ACL of its own, so the stack creates one that allows
-  everything. AWS allows 3 Free plans per account and refuses them while the
-  account is on the AWS Free Tier; set `AWS_CLOUDFRONT_PLAN=PAY_AS_YOU_GO` there.
-  `PricingPlanStatus` in the stack outputs reads `ACTIVE` once it applies.
-- The bucket blocks all public access. CloudFront reads it through **origin
-  access control**, and the bucket policy admits only this distribution.
-- The export is built with `trailingSlash`, so each route is a folder with an
-  `index.html` (`/meetings/new/`). A small CloudFront Function maps clean URLs
-  onto those files, since S3's REST endpoint has no index documents. Anything
-  missing gets the export's `404.html` with a 404 status.
-  `output` stays `standalone` for the compose/production image and switches to
-  `export` only when `NEXT_OUTPUT=export` is set, which is the deploy target's
-  job.
-- HTML is uploaded with `no-cache` and the hashed assets with a one-year
-  immutable header, and every deploy invalidates `/*`, so a new version shows up
-  on the next page load.
-- With `AWS_CORS_ORIGINS` empty, the backend allows exactly the frontend's
-  origins (the CloudFront URL and the custom domain). On the very first
-  `make aws-deploy` the frontend does not exist yet, so the API starts with `*`;
-  the frontend step says so, and the next `make aws-deploy-backend` locks it down.
-
-### 3. Custom domain for the frontend (optional)
+Test health:
 
 ```bash
-# .env
-AWS_FRONTEND_DOMAIN=app.example.com
-
-make aws-frontend-cert      # request + DNS-validate the certificate in us-east-1
-make aws-deploy-frontend    # attach the domain to the distribution
-make aws-deploy-backend     # add the new origin to the API's CORS
+curl http://localhost:8080/health
+# Expected: {"status":"ok","database":"ok","version":"1.0.0"}
 ```
 
-CloudFront only reads ACM certificates from **us-east-1**, and that is where
-everything is deployed. `make aws-frontend-cert` (`infra/certificate.sh`) reuses
-an issued or pending certificate for the domain, or requests one, then waits for
-DNS validation. If the domain's Route 53 hosted zone is in this account, it
-writes the validation record itself, and the frontend stack adds the A/AAAA
-alias records pointing at the distribution. Otherwise both print the records
-to add at your DNS provider: the validation CNAME, then a CNAME from the domain
-to the distribution's `*.cloudfront.net` name.
-
-The API keeps its function URL: a function URL cannot take a custom domain.
-
-### Cost
-
-- **Lambda** — 1M requests and 400,000 GB-seconds a month, always free. The
-  function URL costs nothing beyond the invocation.
-- **Aurora Serverless v2** is not in the free tier. It bills per ACU-hour while
-  awake, nothing for compute while paused, plus storage and I/O. A demo that
-  sits idle costs cents a month.
-- **CloudFront** — the flat-rate Free plan: $0, 1M requests and 100 GB a month,
-  never an overage charge (traffic past it may be slowed, not billed).
-  **S3** — 5 GB and 20,000 GETs in the free tier; CloudFront caches most reads.
-  ACM certificates are free.
-- **ECR** — 500 MB in the free tier; the lifecycle policy keeps five images.
-
-`make aws-destroy` deletes everything, database included, with no snapshot left
-behind. Accounts opened after July 2025 get credits instead of the classic free
-tier — check your billing console rather than assuming.
-
-### Known trade-offs
-
-- **No custom domain on the API**: function URLs cannot take one. Putting one on
-  it would need API Gateway or a second CloudFront distribution in front.
-- The database password reaches the function as a plain environment variable.
-  Moving it to SSM Parameter Store or Secrets Manager is the first thing to
-  harden.
-- **Cold starts**: the first request after a few idle minutes waits ~1–2 s while
-  Lambda starts the container, and up to ~15 s more if Aurora has paused.
-- Every warm instance holds one database connection. Nothing is reserved by
-  default (`MaxConcurrency=0`): new accounts have a Lambda concurrency limit of
-  10 in total and Lambda refuses to reserve any of it, so that limit is the cap,
-  well under the cluster's connection limit. Once the limit is raised, set
-  `MaxConcurrency` to keep a spike off the database; requests beyond it get
-  HTTP 429. RDS Proxy is the proper fix, and it is not free.
-- The function URL is public: FastAPI checks the Cognito access token on every
-  `/api/v1` request, but there is no request throttling in front of it beyond
-  the concurrency limit.
-- Cognito sends its emails (sign-up codes, password resets) itself, capped at 50
-  a day. Switch the pool to SES before real traffic.
-- Signing up with a password and later with Google under the same email makes
-  two separate Cognito users, with separate meetings. Linking them needs a
-  pre-sign-up Lambda trigger.
-- Deleting the backend stack takes ~20 minutes: Lambda releases its VPC network
-  interfaces slowly, and the security groups wait for them.
-- One Aurora instance: there is no reader to fail over to.
-
-## API
-
-Base path `/api/v1`. Full schema at `/docs`. Everything under it needs
-`Authorization: Bearer <Cognito access token>` (`401` otherwise) and only ever
-touches the caller's own meetings: someone else's meeting is a `404`.
-
-| Method | Path | Purpose |
-|--------|------|---------|
-| `GET` | `/meetings?date=&q=&limit=&offset=` | Meetings overlapping a day (today by default) |
-| `GET` | `/meetings/{id}` | One meeting |
-| `POST` | `/meetings` | Create a meeting |
-| `PUT` | `/meetings/{id}` | Replace a meeting's details and participants |
-| `DELETE` | `/meetings/{id}` | Delete a meeting and its participants |
-| `GET` | `/me` | The signed-in user's profile |
-| `POST` | `/me/sync` | Store the profile from the user's ID token (after sign-in) |
-| `GET` | `/health` | Liveness + database check |
-
-Every error uses one envelope:
-
-```json
-{ "error": { "code": "validation_error", "message": "…", "details": [{ "field": "ends_at", "message": "…" }] } }
-```
-
-### Time handling
-
-Timestamps are stored in UTC and **served with the application timezone's offset**
-(`APP_TIMEZONE`, default `Europe/Kyiv`). "Today" is that timezone's calendar day,
-and a meeting is listed if it *overlaps* the day — so a 23:00–00:30 meeting appears
-on both days. The UI reads the wall-clock time straight from the offset the API
-sent, so every client shows the same time as the day it was listed under.
-
-## Layout
-
-```
-backend/    FastAPI app (api → services → repositories → models), Alembic, tests
-frontend/   Next.js app, shadcn/ui primitives in components/ui
-infra/      CloudFormation templates behind the aws-* targets
-docker-compose.yml
-```
-
-## Continuous integration
-
-`.github/workflows/style.yml` runs on every push to `main` and gates style only:
-
-| Job | Runs | Against |
-|-----|------|---------|
-| Backend — ruff | `ruff check` (GitHub annotations) + `ruff format --diff` | `backend/` |
-| Frontend — ESLint | `npm ci` + `npm run lint` | `frontend/` |
-
-Ruff is pinned to the version the backend image ships (0.16.6) and Node matches
-the container's Node 22, so CI and local containers agree on what passes.
-
-Reproduce either job locally:
+### 5. Start Frontend
 
 ```bash
-make lint                                   # both, through the running containers
-cd backend  && uvx ruff@0.16.6 check . && uvx ruff@0.16.6 format --diff .
-cd frontend && npm ci && npm run lint
+cd frontend
+npm install
+npm run dev
 ```
 
-There is no deploy (CD) stage — no target is configured yet.
+Opens at `http://localhost:3000`
 
-## Development notes
+### 6. Test End-to-End
 
-- The backend bind-mounts `./backend`, so `uvicorn --reload` picks up edits live.
-- The frontend runs `next dev` in the container with the same bind mount.
-- Backend tests run against a real Postgres (`meetings_test`), truncating tables
-  between tests; `make test` creates that database if it is missing.
+Frontend will:
+1. Load meetings list from `/api/v1/meetings` (displayed via API client in `lib/api.ts`)
+2. Show today's meetings (or empty state if none)
+3. Allow creating new meetings
 
-## Architecture Decision: Monorepo
+Verify API calls:
 
-We build Spry as a monorepo for two main reasons:
-1. **Atomic changes:** A single commit changes both the API and the client that calls it, preventing contract drift.
-2. **Context window for AI:** The entire pipeline lives in one tree, allowing an AI agent to read endpoints, models, migrations, and UI components in a single pass without guessing contracts.
+```bash
+curl http://localhost:8080/api/v1/meetings
+# Expected: {"items":[],"total":0,...}
+```
 
-## Infrastructure (Terraform)
-Managed via HCP Terraform. Run make infra-plan or push to main branch to trigger automated runs.
+### 7. Cleanup
+
+```bash
+docker stop spry-api spry-db
+docker rm spry-api spry-db
+docker network rm spry-local
+```
+
+---
+
+## GCP Deployment (Cloud Run + Cloud SQL)
+
+### Prerequisites
+
+1. GCP Project with billing enabled
+2. `gcloud` CLI configured:
+   ```bash
+   gcloud auth application-default login
+   gcloud config set project YOUR_PROJECT_ID
+   ```
+
+### 1. Provision Infrastructure
+
+```bash
+cd gcp
+terraform init -backend=false
+terraform apply -var="gcp_project_id=YOUR_PROJECT_ID"
+```
+
+Terraform will:
+- Enable required APIs
+- Create service accounts (least-privilege IAM)
+- Provision Cloud SQL (db-f1-micro PostgreSQL)
+- Create Cloud Run service placeholder
+- Store DB password in Secret Manager
+
+### 2. Build & Push Backend Image
+
+```bash
+docker build -t spry-backend:latest ./backend
+
+gcloud auth configure-docker us-central1-docker.pkg.dev
+
+docker tag spry-backend:latest \
+  us-central1-docker.pkg.dev/YOUR_PROJECT_ID/spry-repo/backend:latest
+
+docker push us-central1-docker.pkg.dev/YOUR_PROJECT_ID/spry-repo/backend:latest
+```
+
+### 3. Deploy to Cloud Run
+
+```bash
+gcloud run deploy spry-api \
+  --image us-central1-docker.pkg.dev/YOUR_PROJECT_ID/spry-repo/backend:latest \
+  --region us-central1 \
+  --platform managed \
+  --service-account spry-api-runner@YOUR_PROJECT_ID.iam.gserviceaccount.com \
+  --set-env-vars "PORT=8080,RUN_MIGRATIONS_ON_START=true"
+```
+
+Or update via GCP Console.
+
+### 4. Retrieve Deployment Info
+
+```bash
+terraform output
+gcloud run services describe spry-api --region us-central1
+```
+
+### 5. Test API
+
+```bash
+CLOUD_RUN_URL=$(gcloud run services describe spry-api --region us-central1 --format='value(status.url)')
+curl $CLOUD_RUN_URL/health
+```
+
+### 6. Deploy Frontend (Optional)
+
+Deploy Next.js frontend to Firebase Hosting (separate process).
+
+---
+
+## Cloud SQL Management
+
+### Connect Locally (Cloud SQL Proxy)
+
+```bash
+cloud-sql-proxy YOUR_PROJECT_ID:us-central1:spry-db-abc123 &
+PGPASSWORD=$(gcloud secrets versions access latest --secret="spry-db-password") \
+psql -h localhost -U appuser -d meetings
+```
+
+### Stop Cloud SQL Instance (Save Costs)
+
+```bash
+gcloud sql instances patch spry-db-abc123 --activation-policy=NEVER
+```
+
+Restart:
+
+```bash
+gcloud sql instances patch spry-db-abc123 --activation-policy=ALWAYS
+```
+
+### Monitor Costs
+
+```bash
+gcloud compute project-info describe --project=YOUR_PROJECT_ID | grep -A5 BILLING
+gcloud billing accounts list
+```
+
+---
+
+## Architecture Decision Record
+
+See `docs/adr/0003-gcp-migration-architecture.md` for:
+- AWS-to-GCP service mapping (Replace/Keep/Drop decisions)
+- Database choice (Cloud SQL vs Firestore vs Aurora)
+- Email provider strategy (SES on AWS, credentials in GCP Secret Manager)
+- Features deferred to future labs (auth migration, AI, reports)
+
+---
+
+## Troubleshooting
+
+### Cloud Run Can't Connect to Cloud SQL
+
+Check:
+```bash
+gcloud run services describe spry-api --region us-central1
+# Verify CloudSQL socket annotation is present
+
+gcloud sql instances describe spry-db-abc123
+# Verify connection name is correct
+
+gcloud logging read "resource.type=cloud_run_revision AND severity>=ERROR" --limit=10
+```
+
+### Secret Manager Not Accessible
+
+```bash
+gcloud secrets versions access latest --secret="spry-db-password"
+gcloud secrets get-iam-policy spry-db-password
+# Verify spry-api-runner has roles/secretmanager.secretAccessor
+```
+
+### Database Unreachable from Cloud Run
+
+```bash
+gcloud run logs read spry-api --region us-central1
+# Check for connection errors
+```
+
+---
+
+## Cost Estimate & Cloud Comparison (Part 3)
+
+All prices are on-demand list prices in USD (`us-east-1` for AWS, `us-central1` for Google Cloud), excluding tax and assuming 730 hours per month.
+
+### 1. Idle Baseline ("Nobody" — 0 active hours/month)
+
+| Piece | AWS (Lab 4, Stage 2) | Google Cloud (Cloud SQL) | Google Cloud (Firestore alt.) |
+| :--- | :--- | :--- | :--- |
+| **Frontend + CDN + HTTPS** | CloudFront Free plan, WAF included → **$0.00** | Firebase Hosting free plan → **$0.00** | Firebase Hosting free plan → **$0.00** |
+| **API** | Lambda, idle → **$0.00** | Cloud Run, scaled to zero → **$0.00** | Cloud Run, scaled to zero → **$0.00** |
+| **Database compute** | Aurora, paused → **$0.00** | Cloud SQL `db-f1-micro` running ($0.0105/h × 730h) → **$7.67** *(or **$0.00** if stopped)* | Serverless (within 50k reads / 20k writes daily free tier) → **$0.00** |
+| **Database storage** | ~1 GB at $0.10/GB → **$0.10** | 10 GB SSD at $0.17/GB → **$1.70** | < 1 GiB free tier → **$0.00** |
+| **Registry, secrets, logs** | ECR / SSM / CloudWatch → **~$0.20** | Artifact Registry / Secret Manager / Logging (free tier) → **$0.00** | Artifact Registry / Secret Manager / Logging (free tier) → **$0.00** |
+| **Total (monthly)** | **≈ $0.30 / month** | **≈ $9.37 / month** *(or **≈ $1.70** if DB stopped)* | **≈ $0.00 / month** |
+
+### 2. Traffic Profiles Comparison (Monthly Cost, USD)
+
+Assumptions:
+- **Cloud Run & Lambda:** Student/class workloads stay well within the monthly free tiers (2M requests, 180k vCPU-s, 360k GiB-s on GCP; 1M requests, 400k GB-s on AWS) → **$0.00**.
+- **AWS Aurora Serverless v2:** 0.5 ACU minimum ($0.12/ACU-h → $0.06/h while active), auto-pauses when idle, plus ~$0.30/month for storage/logs.
+- **GCP Cloud SQL (`db-f1-micro`):** $0.0105/h while running + $1.70/month for 10 GB SSD (billed even when stopped).
+
+| Traffic Profile | Active Hours / Month | AWS Total (Aurora Serverless v2 + Lambda) | GCP Total (Cloud SQL `db-f1-micro` always on) | GCP Total (Cloud SQL stopped when idle) | GCP Total (Firestore) | Cheaper Cloud (Relational DB) |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **1. Nobody (Idle)** | 0 h | **~$0.30** ($0 compute + $0.10 storage + $0.20 logs) | **~$9.37** ($7.67 compute + $1.70 SSD) | **~$1.70** ($0 compute + $1.70 SSD) | **$0.00** | **AWS** (by ~$9.07, or ~$1.40 if GCP DB stopped) |
+| **2. Class demos (10 × 2 h)** | 20 h | **~$1.50** (20h × $0.06 + $0.30 base) | **~$9.37** (runs 730h) | **~$1.91** (20h × $0.0105 + $1.70 SSD) | **$0.00** | **AWS** (by ~$7.87, or ~$0.41 if GCP DB stopped) |
+| **3. Office hours (8 h × 22 d)** | 176 h | **~$10.86** (176h × $0.06 + $0.30 base) | **~$9.37** (runs 730h) | **~$3.55** (176h × $0.0105 + $1.70 SSD) | **$0.00** | **GCP** (saves ~$1.49 even if left running 24/7) |
+| **4. Busy around the clock** | 730 h | **~$44.10** (730h × $0.06 + $0.30 base) | **~$9.37** (730h × $0.0105 + $1.70 SSD) | **~$9.37** (runs 730h) | **~$0.00–$1.00** | **GCP** (saves ~$34.73/month) |
+
+### 3. Cost Analysis Questions
+
+1. **Which cloud is cheaper for each profile, and which single line decides it?**
+   - **Nobody (0 h) & Class demos (20 h/month):** **AWS** is cheaper (~$0.30 and ~$1.50 vs. ~$9.37 on GCP with Cloud SQL running 24/7).
+   - **Office hours (176 h/month) & Busy 24/7 (730 h/month):** **GCP** is cheaper (~$9.37 vs. ~$10.86 and ~$44.10 on AWS).
+   - **The single line that decides it:** **Database compute** (`Aurora Serverless v2` vs. `Cloud SQL db-f1-micro`). Frontend, API compute, registry, and secrets cost $0 or mere cents on both platforms; the cost crossover happens because Aurora auto-pauses at $0 when idle but charges $0.06/h (0.5 ACU) when active, whereas Cloud SQL has no auto-pause but costs a flat $0.0105/h (~6× cheaper per active hour). *(If Firestore is chosen instead of SQL, GCP wins all four profiles at ~$0/month).*
+
+2. **Where is the equivalent cost trap on the GCP side (compared to Aurora being kept awake on AWS)?**
+   - **With Cloud SQL:**
+     1. **Forgetting to stop the instance:** Because Cloud SQL does not auto-pause on idle, leaving `db-f1-micro` running during idle periods silently burns **$7.67/month** (or **$25.55/month** if provisioned as `db-g1-small`). Even when stopped, the 10 GB SSD continues billing **$1.70/month** until deleted.
+     2. **Disabling Cloud Run scale-to-zero:** Setting `min_instance_count >= 1` allocates continuous CPU and memory billing even with zero traffic.
+   - **With Firestore (serverless alternative):** The trap is **unbounded document reads per request** (e.g., fetching an entire collection of 1,000 items without pagination or caching, or reactive listeners re-reading documents on every UI update). Just 51 loads of a 1,000-document list exhausts the 50,000 daily free reads and immediately triggers per-operation billing.
+
+---
+
+## Next Steps
+
+1. ✅ Complete GCP infrastructure (`gcp/` Terraform)
+2. ✅ Build backend Docker image (Cloud Run compatible)
+3. ✅ Verify local deployment (API + frontend)
+4. 🔄 Deploy to Cloud Run (manual push or CI/CD)
+5. 🔄 Deploy frontend to Firebase Hosting
+6. 🔄 Test cross-cloud integration (GCP API ↔ AWS Cognito)
+7. 🔄 Set up monitoring & logging
+8. 🔄 Future: Migrate auth to GCP Identity Platform, move AI to Vertex AI
+
+---
+
+## References
+
+- **ADR 0003:** `docs/adr/0003-gcp-migration-architecture.md`
+- **GCP README:** `gcp/README.md`
+- **Terraform:** `gcp/versions.tf`, `gcp/cloud_sql.tf`, `gcp/cloud_run.tf`
+- **Backend Dockerfile:** `backend/Dockerfile` (HTTP server, no Lambda)
+- **Project Spec:** `SPEC.md`, `PROJECT.md`
+
+---
+
+## Support
+
+For issues:
+1. Check `gcloud run logs read spry-api --region us-central1`
+2. Review ADR 0003 for architecture decisions
+3. Refer to `gcp/README.md` for deployment details
+4. Contact: See `SPEC.md` section 11 (Known gaps & future work)

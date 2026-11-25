@@ -4,7 +4,8 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
-    UV_PROJECT_ENVIRONMENT=/usr/local
+    UV_PROJECT_ENVIRONMENT=/usr/local \
+    PORT=8080
 
 ARG INSTALL_DEV=false
 
@@ -31,7 +32,6 @@ RUN sed 's/\r$//' entrypoint.sh > /usr/local/bin/entrypoint.sh \
 RUN useradd --create-home --uid 1000 appuser && chown -R appuser:appuser /app
 USER appuser
 
-EXPOSE 8000
+EXPOSE $PORT
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

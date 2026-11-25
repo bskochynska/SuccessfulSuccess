@@ -1,0 +1,2225 @@
+[
+  {
+    "invoiceId": "inv_ds_1001",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 12561,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:02+00:00",
+    "receivedAt": "2026-11-07T10:00:02+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1002",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 3283,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:04+00:00",
+    "receivedAt": "2026-11-07T10:00:04+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1003",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 18145,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:06+00:00",
+    "receivedAt": "2026-11-07T10:00:06+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1004",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 44471,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:08+00:00",
+    "receivedAt": "2026-11-07T10:00:08+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1005",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 29567,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:10+00:00",
+    "receivedAt": "2026-11-07T10:00:10+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1006",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 24636,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:06+00:00",
+    "receivedAt": "2026-11-07T10:00:12+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1007",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 12793,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:14+00:00",
+    "receivedAt": "2026-11-07T10:00:14+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1008",
+    "paymentMethod": "google_pay",
+    "status": "failure",
+    "amount": 1990,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:16+00:00",
+    "receivedAt": "2026-11-07T10:00:16+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1009",
+    "paymentMethod": "google_pay",
+    "status": "failure",
+    "amount": 40328,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:18+00:00",
+    "receivedAt": "2026-11-07T10:00:18+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1010",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 35928,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:20+00:00",
+    "receivedAt": "2026-11-07T10:00:20+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1011",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 4578,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:22+00:00",
+    "receivedAt": "2026-11-07T10:00:22+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1012",
+    "paymentMethod": "card",
+    "status": "failure",
+    "amount": 4157,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:24+00:00",
+    "receivedAt": "2026-11-07T10:00:24+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1013",
+    "paymentMethod": "google_pay",
+    "status": "failure",
+    "amount": 6316,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:26+00:00",
+    "receivedAt": "2026-11-07T10:00:26+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1014",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 10203,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:28+00:00",
+    "receivedAt": "2026-11-07T10:00:28+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1015",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 26978,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:30+00:00",
+    "receivedAt": "2026-11-07T10:00:30+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1016",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 7763,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:32+00:00",
+    "receivedAt": "2026-11-07T10:00:32+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1017",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 30148,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:34+00:00",
+    "receivedAt": "2026-11-07T10:00:34+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1018",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 20966,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:36+00:00",
+    "receivedAt": "2026-11-07T10:00:36+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1019",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 4764,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:38+00:00",
+    "receivedAt": "2026-11-07T10:00:38+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1020",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 6479,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:40+00:00",
+    "receivedAt": "2026-11-07T10:00:40+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1021",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 4805,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:42+00:00",
+    "receivedAt": "2026-11-07T10:00:42+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1022",
+    "paymentMethod": "apple_pay",
+    "status": "failure",
+    "amount": 9693,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:44+00:00",
+    "receivedAt": "2026-11-07T10:00:44+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1023",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 29722,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:35+00:00",
+    "receivedAt": "2026-11-07T10:00:46+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1024",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 18220,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:48+00:00",
+    "receivedAt": "2026-11-07T10:00:48+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1025",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 28248,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:50+00:00",
+    "receivedAt": "2026-11-07T10:00:50+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1026",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 3963,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:52+00:00",
+    "receivedAt": "2026-11-07T10:00:52+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1027",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 3319,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:54+00:00",
+    "receivedAt": "2026-11-07T10:00:54+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1028",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 7492,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:56+00:00",
+    "receivedAt": "2026-11-07T10:00:56+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1029",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 44137,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:58+00:00",
+    "receivedAt": "2026-11-07T10:00:58+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1030",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 42139,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:00:49+00:00",
+    "receivedAt": "2026-11-07T10:01:00+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1031",
+    "paymentMethod": "apple_pay",
+    "status": "failure",
+    "amount": 31567,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:02+00:00",
+    "receivedAt": "2026-11-07T10:01:02+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1032",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 42741,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:04+00:00",
+    "receivedAt": "2026-11-07T10:01:04+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1033",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 37556,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:06+00:00",
+    "receivedAt": "2026-11-07T10:01:06+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1034",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 32178,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:08+00:00",
+    "receivedAt": "2026-11-07T10:01:08+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1035",
+    "paymentMethod": "google_pay",
+    "status": "failure",
+    "amount": 6551,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:10+00:00",
+    "receivedAt": "2026-11-07T10:01:10+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1036",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 37717,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:12+00:00",
+    "receivedAt": "2026-11-07T10:01:12+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1037",
+    "paymentMethod": "google_pay",
+    "status": "failure",
+    "amount": 25147,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:14+00:00",
+    "receivedAt": "2026-11-07T10:01:14+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1038",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 9605,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:07+00:00",
+    "receivedAt": "2026-11-07T10:01:16+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1039",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 32573,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:18+00:00",
+    "receivedAt": "2026-11-07T10:01:18+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1040",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 35169,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:20+00:00",
+    "receivedAt": "2026-11-07T10:01:20+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1041",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 32116,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:22+00:00",
+    "receivedAt": "2026-11-07T10:01:22+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1042",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 16839,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:24+00:00",
+    "receivedAt": "2026-11-07T10:01:24+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1043",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 41818,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:26+00:00",
+    "receivedAt": "2026-11-07T10:01:26+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1044",
+    "paymentMethod": "crypto",
+    "status": "failure",
+    "amount": 23836,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:28+00:00",
+    "receivedAt": "2026-11-07T10:01:28+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1045",
+    "paymentMethod": "google_pay",
+    "status": "failure",
+    "amount": 4703,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:30+00:00",
+    "receivedAt": "2026-11-07T10:01:30+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1046",
+    "paymentMethod": "google_pay",
+    "status": "failure",
+    "amount": 18608,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:32+00:00",
+    "receivedAt": "2026-11-07T10:01:32+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1047",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 28388,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:34+00:00",
+    "receivedAt": "2026-11-07T10:01:34+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1048",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 26957,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:36+00:00",
+    "receivedAt": "2026-11-07T10:01:36+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1049",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 30867,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:38+00:00",
+    "receivedAt": "2026-11-07T10:01:38+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1050",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 25096,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:40+00:00",
+    "receivedAt": "2026-11-07T10:01:40+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1051",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 8330,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:42+00:00",
+    "receivedAt": "2026-11-07T10:01:42+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1052",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 14528,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:38+00:00",
+    "receivedAt": "2026-11-07T10:01:44+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1053",
+    "paymentMethod": "google_pay",
+    "status": "failure",
+    "amount": 42227,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:42+00:00",
+    "receivedAt": "2026-11-07T10:01:46+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1054",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 43065,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:48+00:00",
+    "receivedAt": "2026-11-07T10:01:48+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1055",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 32614,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:50+00:00",
+    "receivedAt": "2026-11-07T10:01:50+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1056",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 24967,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:52+00:00",
+    "receivedAt": "2026-11-07T10:01:52+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1057",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 30565,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:54+00:00",
+    "receivedAt": "2026-11-07T10:01:54+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1058",
+    "paymentMethod": "crypto",
+    "status": "failure",
+    "amount": 1608,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:56+00:00",
+    "receivedAt": "2026-11-07T10:01:56+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1059",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 34665,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:01:58+00:00",
+    "receivedAt": "2026-11-07T10:01:58+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1060",
+    "paymentMethod": "crypto",
+    "status": "failure",
+    "amount": 19663,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:00+00:00",
+    "receivedAt": "2026-11-07T10:02:00+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1061",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 34923,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:02+00:00",
+    "receivedAt": "2026-11-07T10:02:02+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1062",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 30510,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:04+00:00",
+    "receivedAt": "2026-11-07T10:02:04+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1063",
+    "paymentMethod": "card",
+    "status": "failure",
+    "amount": 43383,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:06+00:00",
+    "receivedAt": "2026-11-07T10:02:06+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1064",
+    "paymentMethod": "google_pay",
+    "status": "failure",
+    "amount": 5925,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:08+00:00",
+    "receivedAt": "2026-11-07T10:02:08+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1065",
+    "paymentMethod": "apple_pay",
+    "status": "failure",
+    "amount": 33764,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:10+00:00",
+    "receivedAt": "2026-11-07T10:02:10+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1066",
+    "paymentMethod": "card",
+    "status": "failure",
+    "amount": 25594,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:12+00:00",
+    "receivedAt": "2026-11-07T10:02:12+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1067",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 7252,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:05+00:00",
+    "receivedAt": "2026-11-07T10:02:14+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1068",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 30375,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:16+00:00",
+    "receivedAt": "2026-11-07T10:02:16+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1069",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 35587,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:18+00:00",
+    "receivedAt": "2026-11-07T10:02:18+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1070",
+    "paymentMethod": "crypto",
+    "status": "failure",
+    "amount": 6541,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:20+00:00",
+    "receivedAt": "2026-11-07T10:02:20+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1071",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 34062,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:22+00:00",
+    "receivedAt": "2026-11-07T10:02:22+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1072",
+    "paymentMethod": "google_pay",
+    "status": "failure",
+    "amount": 17073,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:24+00:00",
+    "receivedAt": "2026-11-07T10:02:24+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1073",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 31934,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:26+00:00",
+    "receivedAt": "2026-11-07T10:02:26+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1074",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 18322,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:28+00:00",
+    "receivedAt": "2026-11-07T10:02:28+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1075",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 37146,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:30+00:00",
+    "receivedAt": "2026-11-07T10:02:30+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1076",
+    "paymentMethod": "crypto",
+    "status": "failure",
+    "amount": 8911,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:32+00:00",
+    "receivedAt": "2026-11-07T10:02:32+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1077",
+    "paymentMethod": "google_pay",
+    "status": "failure",
+    "amount": 7533,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:34+00:00",
+    "receivedAt": "2026-11-07T10:02:34+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1078",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 10938,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:36+00:00",
+    "receivedAt": "2026-11-07T10:02:36+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1079",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 17356,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:38+00:00",
+    "receivedAt": "2026-11-07T10:02:38+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1080",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 17900,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:40+00:00",
+    "receivedAt": "2026-11-07T10:02:40+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1081",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 44578,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:42+00:00",
+    "receivedAt": "2026-11-07T10:02:42+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1082",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 42675,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:44+00:00",
+    "receivedAt": "2026-11-07T10:02:44+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1083",
+    "paymentMethod": "crypto",
+    "status": "failure",
+    "amount": 38164,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:46+00:00",
+    "receivedAt": "2026-11-07T10:02:46+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1084",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 5017,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:48+00:00",
+    "receivedAt": "2026-11-07T10:02:48+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1085",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 5497,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:50+00:00",
+    "receivedAt": "2026-11-07T10:02:50+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1086",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 7816,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:45+00:00",
+    "receivedAt": "2026-11-07T10:02:52+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1087",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 10357,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:54+00:00",
+    "receivedAt": "2026-11-07T10:02:54+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1088",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 9668,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:46+00:00",
+    "receivedAt": "2026-11-07T10:02:56+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1089",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 32095,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:02:58+00:00",
+    "receivedAt": "2026-11-07T10:02:58+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1090",
+    "paymentMethod": "crypto",
+    "status": "failure",
+    "amount": 13298,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:00+00:00",
+    "receivedAt": "2026-11-07T10:03:00+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1091",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 28812,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:02+00:00",
+    "receivedAt": "2026-11-07T10:03:02+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1092",
+    "paymentMethod": "crypto",
+    "status": "failure",
+    "amount": 42689,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:04+00:00",
+    "receivedAt": "2026-11-07T10:03:04+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1093",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 29650,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:06+00:00",
+    "receivedAt": "2026-11-07T10:03:06+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1094",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 14914,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:08+00:00",
+    "receivedAt": "2026-11-07T10:03:08+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1095",
+    "paymentMethod": "google_pay",
+    "status": "failure",
+    "amount": 34433,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:10+00:00",
+    "receivedAt": "2026-11-07T10:03:10+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1096",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 36685,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:12+00:00",
+    "receivedAt": "2026-11-07T10:03:12+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1097",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 21199,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:14+00:00",
+    "receivedAt": "2026-11-07T10:03:14+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1098",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 41718,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:16+00:00",
+    "receivedAt": "2026-11-07T10:03:16+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1099",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 21807,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:18+00:00",
+    "receivedAt": "2026-11-07T10:03:18+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1100",
+    "paymentMethod": "apple_pay",
+    "status": "failure",
+    "amount": 27976,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:20+00:00",
+    "receivedAt": "2026-11-07T10:03:20+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1101",
+    "paymentMethod": "crypto",
+    "status": "failure",
+    "amount": 38464,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:22+00:00",
+    "receivedAt": "2026-11-07T10:03:22+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1102",
+    "paymentMethod": "crypto",
+    "status": "failure",
+    "amount": 20115,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:21+00:00",
+    "receivedAt": "2026-11-07T10:03:24+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1103",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 12056,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:19+00:00",
+    "receivedAt": "2026-11-07T10:03:26+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1104",
+    "paymentMethod": "apple_pay",
+    "status": "failure",
+    "amount": 38961,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:18+00:00",
+    "receivedAt": "2026-11-07T10:03:28+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1105",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 6347,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:30+00:00",
+    "receivedAt": "2026-11-07T10:03:30+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1106",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 22561,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:32+00:00",
+    "receivedAt": "2026-11-07T10:03:32+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1107",
+    "paymentMethod": "apple_pay",
+    "status": "failure",
+    "amount": 27221,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:34+00:00",
+    "receivedAt": "2026-11-07T10:03:34+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1108",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 25281,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:36+00:00",
+    "receivedAt": "2026-11-07T10:03:36+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1109",
+    "paymentMethod": "google_pay",
+    "status": "failure",
+    "amount": 6774,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:38+00:00",
+    "receivedAt": "2026-11-07T10:03:38+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1110",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 27851,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:40+00:00",
+    "receivedAt": "2026-11-07T10:03:40+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1111",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 21672,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:42+00:00",
+    "receivedAt": "2026-11-07T10:03:42+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1112",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 9919,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:35+00:00",
+    "receivedAt": "2026-11-07T10:03:44+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1113",
+    "paymentMethod": "google_pay",
+    "status": "failure",
+    "amount": 6747,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:46+00:00",
+    "receivedAt": "2026-11-07T10:03:46+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1114",
+    "paymentMethod": "apple_pay",
+    "status": "failure",
+    "amount": 1908,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:45+00:00",
+    "receivedAt": "2026-11-07T10:03:48+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1115",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 30100,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:50+00:00",
+    "receivedAt": "2026-11-07T10:03:50+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1116",
+    "paymentMethod": "card",
+    "status": "failure",
+    "amount": 26136,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:52+00:00",
+    "receivedAt": "2026-11-07T10:03:52+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1117",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 21842,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:54+00:00",
+    "receivedAt": "2026-11-07T10:03:54+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1118",
+    "paymentMethod": "google_pay",
+    "status": "failure",
+    "amount": 6665,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:56+00:00",
+    "receivedAt": "2026-11-07T10:03:56+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1119",
+    "paymentMethod": "apple_pay",
+    "status": "failure",
+    "amount": 41728,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:03:58+00:00",
+    "receivedAt": "2026-11-07T10:03:58+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1120",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 15997,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:00+00:00",
+    "receivedAt": "2026-11-07T10:04:00+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1121",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 22493,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:02+00:00",
+    "receivedAt": "2026-11-07T10:04:02+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1122",
+    "paymentMethod": "apple_pay",
+    "status": "failure",
+    "amount": 21709,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:04+00:00",
+    "receivedAt": "2026-11-07T10:04:04+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1123",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 17313,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:06+00:00",
+    "receivedAt": "2026-11-07T10:04:06+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1124",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 40322,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:08+00:00",
+    "receivedAt": "2026-11-07T10:04:08+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1125",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 44079,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:10+00:00",
+    "receivedAt": "2026-11-07T10:04:10+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1126",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 22776,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:12+00:00",
+    "receivedAt": "2026-11-07T10:04:12+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1127",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 27901,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:14+00:00",
+    "receivedAt": "2026-11-07T10:04:14+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1128",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 36170,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:16+00:00",
+    "receivedAt": "2026-11-07T10:04:16+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1129",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 19081,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:18+00:00",
+    "receivedAt": "2026-11-07T10:04:18+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1130",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 28526,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:20+00:00",
+    "receivedAt": "2026-11-07T10:04:20+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1131",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 1788,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:11+00:00",
+    "receivedAt": "2026-11-07T10:04:22+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1132",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 21976,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:24+00:00",
+    "receivedAt": "2026-11-07T10:04:24+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1133",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 15130,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:26+00:00",
+    "receivedAt": "2026-11-07T10:04:26+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1134",
+    "paymentMethod": "crypto",
+    "status": "failure",
+    "amount": 6103,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:28+00:00",
+    "receivedAt": "2026-11-07T10:04:28+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1135",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 24220,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:30+00:00",
+    "receivedAt": "2026-11-07T10:04:30+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1136",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 18272,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:32+00:00",
+    "receivedAt": "2026-11-07T10:04:32+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1137",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 19775,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:34+00:00",
+    "receivedAt": "2026-11-07T10:04:34+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1138",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 20751,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:36+00:00",
+    "receivedAt": "2026-11-07T10:04:36+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1139",
+    "paymentMethod": "google_pay",
+    "status": "failure",
+    "amount": 3513,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:30+00:00",
+    "receivedAt": "2026-11-07T10:04:38+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1140",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 2763,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:40+00:00",
+    "receivedAt": "2026-11-07T10:04:40+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1141",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 20084,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:42+00:00",
+    "receivedAt": "2026-11-07T10:04:42+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1142",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 31747,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:44+00:00",
+    "receivedAt": "2026-11-07T10:04:44+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1143",
+    "paymentMethod": "crypto",
+    "status": "failure",
+    "amount": 5174,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:46+00:00",
+    "receivedAt": "2026-11-07T10:04:46+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1144",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 10960,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:48+00:00",
+    "receivedAt": "2026-11-07T10:04:48+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1145",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 24573,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:50+00:00",
+    "receivedAt": "2026-11-07T10:04:50+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1146",
+    "paymentMethod": "crypto",
+    "status": "failure",
+    "amount": 1887,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:52+00:00",
+    "receivedAt": "2026-11-07T10:04:52+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1147",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 2962,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:54+00:00",
+    "receivedAt": "2026-11-07T10:04:54+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1148",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 38819,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:56+00:00",
+    "receivedAt": "2026-11-07T10:04:56+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1149",
+    "paymentMethod": "google_pay",
+    "status": "failure",
+    "amount": 36227,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:04:58+00:00",
+    "receivedAt": "2026-11-07T10:04:58+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1150",
+    "paymentMethod": "crypto",
+    "status": "failure",
+    "amount": 33920,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:00+00:00",
+    "receivedAt": "2026-11-07T10:05:00+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1151",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 43167,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:02+00:00",
+    "receivedAt": "2026-11-07T10:05:02+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1152",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 4418,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:04+00:00",
+    "receivedAt": "2026-11-07T10:05:04+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1153",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 24931,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:06+00:00",
+    "receivedAt": "2026-11-07T10:05:06+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1154",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 30863,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:08+00:00",
+    "receivedAt": "2026-11-07T10:05:08+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1155",
+    "paymentMethod": "card",
+    "status": "failure",
+    "amount": 29513,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:10+00:00",
+    "receivedAt": "2026-11-07T10:05:10+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1156",
+    "paymentMethod": "apple_pay",
+    "status": "failure",
+    "amount": 29047,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:12+00:00",
+    "receivedAt": "2026-11-07T10:05:12+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1157",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 41640,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:14+00:00",
+    "receivedAt": "2026-11-07T10:05:14+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1158",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 27330,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:16+00:00",
+    "receivedAt": "2026-11-07T10:05:16+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1159",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 18995,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:15+00:00",
+    "receivedAt": "2026-11-07T10:05:18+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1160",
+    "paymentMethod": "crypto",
+    "status": "failure",
+    "amount": 23116,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:20+00:00",
+    "receivedAt": "2026-11-07T10:05:20+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1161",
+    "paymentMethod": "apple_pay",
+    "status": "failure",
+    "amount": 15602,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:22+00:00",
+    "receivedAt": "2026-11-07T10:05:22+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1162",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 12595,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:24+00:00",
+    "receivedAt": "2026-11-07T10:05:24+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1163",
+    "paymentMethod": "card",
+    "status": "failure",
+    "amount": 31454,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:26+00:00",
+    "receivedAt": "2026-11-07T10:05:26+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1164",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 23681,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:28+00:00",
+    "receivedAt": "2026-11-07T10:05:28+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1165",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 28901,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:30+00:00",
+    "receivedAt": "2026-11-07T10:05:30+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1166",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 8572,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:32+00:00",
+    "receivedAt": "2026-11-07T10:05:32+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1167",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 44884,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:34+00:00",
+    "receivedAt": "2026-11-07T10:05:34+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1168",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 18498,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:36+00:00",
+    "receivedAt": "2026-11-07T10:05:36+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1169",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 4652,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:38+00:00",
+    "receivedAt": "2026-11-07T10:05:38+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1170",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 39537,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:40+00:00",
+    "receivedAt": "2026-11-07T10:05:40+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1171",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 42648,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:42+00:00",
+    "receivedAt": "2026-11-07T10:05:42+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1172",
+    "paymentMethod": "google_pay",
+    "status": "failure",
+    "amount": 27587,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:44+00:00",
+    "receivedAt": "2026-11-07T10:05:44+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1173",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 41179,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:46+00:00",
+    "receivedAt": "2026-11-07T10:05:46+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1174",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 7154,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:45+00:00",
+    "receivedAt": "2026-11-07T10:05:48+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1175",
+    "paymentMethod": "google_pay",
+    "status": "failure",
+    "amount": 2063,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:50+00:00",
+    "receivedAt": "2026-11-07T10:05:50+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1176",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 18130,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:44+00:00",
+    "receivedAt": "2026-11-07T10:05:52+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1177",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 39673,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:54+00:00",
+    "receivedAt": "2026-11-07T10:05:54+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1178",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 42524,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:56+00:00",
+    "receivedAt": "2026-11-07T10:05:56+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1179",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 18315,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:58+00:00",
+    "receivedAt": "2026-11-07T10:05:58+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1180",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 27633,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:00+00:00",
+    "receivedAt": "2026-11-07T10:06:00+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1181",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 34472,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:02+00:00",
+    "receivedAt": "2026-11-07T10:06:02+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1182",
+    "paymentMethod": "card",
+    "status": "failure",
+    "amount": 35692,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:05:59+00:00",
+    "receivedAt": "2026-11-07T10:06:04+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1183",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 31637,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:06+00:00",
+    "receivedAt": "2026-11-07T10:06:06+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1184",
+    "paymentMethod": "crypto",
+    "status": "failure",
+    "amount": 21959,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:08+00:00",
+    "receivedAt": "2026-11-07T10:06:08+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1185",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 18178,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:10+00:00",
+    "receivedAt": "2026-11-07T10:06:10+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1186",
+    "paymentMethod": "crypto",
+    "status": "failure",
+    "amount": 43856,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:12+00:00",
+    "receivedAt": "2026-11-07T10:06:12+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1187",
+    "paymentMethod": "google_pay",
+    "status": "failure",
+    "amount": 7335,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:05+00:00",
+    "receivedAt": "2026-11-07T10:06:14+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1188",
+    "paymentMethod": "card",
+    "status": "failure",
+    "amount": 44051,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:16+00:00",
+    "receivedAt": "2026-11-07T10:06:16+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1189",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 34164,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:18+00:00",
+    "receivedAt": "2026-11-07T10:06:18+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1190",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 39538,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:20+00:00",
+    "receivedAt": "2026-11-07T10:06:20+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1191",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 37287,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:22+00:00",
+    "receivedAt": "2026-11-07T10:06:22+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1192",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 33699,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:24+00:00",
+    "receivedAt": "2026-11-07T10:06:24+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1193",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 18669,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:26+00:00",
+    "receivedAt": "2026-11-07T10:06:26+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1194",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 39675,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:28+00:00",
+    "receivedAt": "2026-11-07T10:06:28+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1195",
+    "paymentMethod": "card",
+    "status": "failure",
+    "amount": 9215,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:19+00:00",
+    "receivedAt": "2026-11-07T10:06:30+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1196",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 40835,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:32+00:00",
+    "receivedAt": "2026-11-07T10:06:32+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1197",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 24813,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:34+00:00",
+    "receivedAt": "2026-11-07T10:06:34+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1198",
+    "paymentMethod": "crypto",
+    "status": "failure",
+    "amount": 16165,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:36+00:00",
+    "receivedAt": "2026-11-07T10:06:36+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1199",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 12502,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:38+00:00",
+    "receivedAt": "2026-11-07T10:06:38+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1200",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 28149,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:40+00:00",
+    "receivedAt": "2026-11-07T10:06:40+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1201",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 13999,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:42+00:00",
+    "receivedAt": "2026-11-07T10:06:42+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1202",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 24694,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:44+00:00",
+    "receivedAt": "2026-11-07T10:06:44+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1203",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 22573,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:46+00:00",
+    "receivedAt": "2026-11-07T10:06:46+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1204",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 8070,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:48+00:00",
+    "receivedAt": "2026-11-07T10:06:48+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1205",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 43180,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:50+00:00",
+    "receivedAt": "2026-11-07T10:06:50+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1206",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 35557,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:45+00:00",
+    "receivedAt": "2026-11-07T10:06:52+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1207",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 31250,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:51+00:00",
+    "receivedAt": "2026-11-07T10:06:54+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1208",
+    "paymentMethod": "card",
+    "status": "failure",
+    "amount": 29404,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:56+00:00",
+    "receivedAt": "2026-11-07T10:06:56+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1209",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 44541,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:06:58+00:00",
+    "receivedAt": "2026-11-07T10:06:58+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1210",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 40933,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:00+00:00",
+    "receivedAt": "2026-11-07T10:07:00+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1211",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 4692,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:02+00:00",
+    "receivedAt": "2026-11-07T10:07:02+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1212",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 34667,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:04+00:00",
+    "receivedAt": "2026-11-07T10:07:04+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1213",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 23794,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:06+00:00",
+    "receivedAt": "2026-11-07T10:07:06+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1214",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 18637,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:08+00:00",
+    "receivedAt": "2026-11-07T10:07:08+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1215",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 24956,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:10+00:00",
+    "receivedAt": "2026-11-07T10:07:10+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1216",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 17911,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:12+00:00",
+    "receivedAt": "2026-11-07T10:07:12+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1217",
+    "paymentMethod": "crypto",
+    "status": "failure",
+    "amount": 38915,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:06+00:00",
+    "receivedAt": "2026-11-07T10:07:14+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1218",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 31305,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:16+00:00",
+    "receivedAt": "2026-11-07T10:07:16+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1219",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 14472,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:10+00:00",
+    "receivedAt": "2026-11-07T10:07:18+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1220",
+    "paymentMethod": "google_pay",
+    "status": "failure",
+    "amount": 31726,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:08+00:00",
+    "receivedAt": "2026-11-07T10:07:20+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1221",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 26129,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:22+00:00",
+    "receivedAt": "2026-11-07T10:07:22+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1222",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 7209,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:24+00:00",
+    "receivedAt": "2026-11-07T10:07:24+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1223",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 4738,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:26+00:00",
+    "receivedAt": "2026-11-07T10:07:26+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1224",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 31236,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:28+00:00",
+    "receivedAt": "2026-11-07T10:07:28+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1225",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 38088,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:30+00:00",
+    "receivedAt": "2026-11-07T10:07:30+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1226",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 23164,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:32+00:00",
+    "receivedAt": "2026-11-07T10:07:32+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1227",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 22551,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:31+00:00",
+    "receivedAt": "2026-11-07T10:07:34+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1228",
+    "paymentMethod": "apple_pay",
+    "status": "failure",
+    "amount": 12701,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:25+00:00",
+    "receivedAt": "2026-11-07T10:07:36+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1229",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 15594,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:38+00:00",
+    "receivedAt": "2026-11-07T10:07:38+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1230",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 19402,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:40+00:00",
+    "receivedAt": "2026-11-07T10:07:40+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1231",
+    "paymentMethod": "card",
+    "status": "failure",
+    "amount": 2918,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:42+00:00",
+    "receivedAt": "2026-11-07T10:07:42+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1232",
+    "paymentMethod": "apple_pay",
+    "status": "failure",
+    "amount": 25415,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:44+00:00",
+    "receivedAt": "2026-11-07T10:07:44+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1233",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 36807,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:38+00:00",
+    "receivedAt": "2026-11-07T10:07:46+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1234",
+    "paymentMethod": "crypto",
+    "status": "failure",
+    "amount": 29514,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:48+00:00",
+    "receivedAt": "2026-11-07T10:07:48+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1235",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 33649,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:42+00:00",
+    "receivedAt": "2026-11-07T10:07:50+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1236",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 26776,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:52+00:00",
+    "receivedAt": "2026-11-07T10:07:52+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1237",
+    "paymentMethod": "apple_pay",
+    "status": "success",
+    "amount": 34274,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:54+00:00",
+    "receivedAt": "2026-11-07T10:07:54+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1238",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 22025,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:56+00:00",
+    "receivedAt": "2026-11-07T10:07:56+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1239",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 31645,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:48+00:00",
+    "receivedAt": "2026-11-07T10:07:58+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1240",
+    "paymentMethod": "apple_pay",
+    "status": "failure",
+    "amount": 31786,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:08:00+00:00",
+    "receivedAt": "2026-11-07T10:08:00+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1241",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 24291,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:08:02+00:00",
+    "receivedAt": "2026-11-07T10:08:02+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1242",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 37921,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:08:04+00:00",
+    "receivedAt": "2026-11-07T10:08:04+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1243",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 14914,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:07:57+00:00",
+    "receivedAt": "2026-11-07T10:08:06+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1244",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 19964,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:08:08+00:00",
+    "receivedAt": "2026-11-07T10:08:08+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1245",
+    "paymentMethod": "crypto",
+    "status": "success",
+    "amount": 9332,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:08:10+00:00",
+    "receivedAt": "2026-11-07T10:08:10+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1246",
+    "paymentMethod": "google_pay",
+    "status": "success",
+    "amount": 41794,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:08:12+00:00",
+    "receivedAt": "2026-11-07T10:08:12+00:00"
+  },
+  {
+    "invoiceId": "inv_ds_1247",
+    "paymentMethod": "card",
+    "status": "success",
+    "amount": 25735,
+    "ccy": 980,
+    "createdDate": "2026-11-07T10:08:14+00:00",
+    "receivedAt": "2026-11-07T10:08:14+00:00"
+  }
+]

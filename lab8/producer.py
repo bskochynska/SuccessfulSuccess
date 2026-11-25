@@ -1,40 +1,42 @@
 import json
 import random
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from kafka import KafkaProducer
+
+print("🚀 Запуск продюсера Redpanda: відправка 100 подій...")
 
 producer = KafkaProducer(
     bootstrap_servers=['localhost:9092'],
-    key_serializer=lambda k: k.encode('utf-8'),
     value_serializer=lambda v: json.dumps(v).encode('utf-8')
 )
 
+TOPIC_NAME = 'payments_stream'
 methods = ['card', 'apple_pay', 'google_pay', 'crypto']
 statuses = ['success', 'success', 'success', 'failure']
 
-print("Початок генерації та відправки 100 подій у топік 'payments'...")
+for i in range(1, 101):
+    now = datetime.now(timezone.utc)
 
-try:
-    for i in range(1, 101):
-        invoice_id = f"inv_{1000 + i}"
-        event_time = datetime.now(timezone.utc).isoformat()
-        status = random.choice(statuses) if i % 3 == 0 else 'success'
-        event = {
-            'invoiceId': invoice_id,
-            'paymentMethod': random.choice(methods),
-            'status': status,
-            'modifiedDate': event_time,
-            'receivedAt': event_time
-        }
+    # Симуляція запізнення: кожна ~5-та подія створюється із затримкою від 5 до 10 секунд
+    is_late = random.random() < 0.20
+    if is_late:
+        created_dt = now - timedelta(seconds=random.randint(5, 10))
+    else:
+        created_dt = now
 
-        producer.send('payments', key=invoice_id, value=event)
-        print(f"Надіслано подій: {i}/100 | Invoice: {invoice_id} | Status: {status}")
+    event = {
+        'invoiceId': f"inv_kafka_{1000 + i}",
+        'paymentMethod': random.choice(methods),
+        'status': random.choice(statuses),
+        'amount': random.randint(100, 15000),
+        'ccy': 980,
+        'createdDate': created_dt.isoformat(),
+        'receivedAt': now.isoformat()
+    }
 
-        time.sleep(0.2)
+    producer.send(TOPIC_NAME, value=event)
+    time.sleep(0.02)
 
-    producer.flush()
-    print("Відправку 100 подій повністю завершено!")
-
-except Exception as e:
-    print(f"Помилка: {e}")
+producer.flush()
+print("✅ Усі 100 подій успішно відправлено в Redpanda!")

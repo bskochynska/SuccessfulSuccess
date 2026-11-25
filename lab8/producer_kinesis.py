@@ -25,14 +25,15 @@ try:
             'status': status,
             'amount': random.randint(100, 15000),
             'ccy': 980,
+            'createdDate': now_iso,
             'modifiedDate': now_iso,
             'receivedAt': now_iso
         }
 
-        # Відправка в Kinesis з PartitionKey=invoiceId
+        # Відправка в Kinesis з обов'язковим розділювачем рядків '\n'
         response = kinesis_client.put_record(
             StreamName=STREAM_NAME,
-            Data=json.dumps(event),
+            Data=(json.dumps(event) + '\n'),
             PartitionKey=invoice_id
         )
 
